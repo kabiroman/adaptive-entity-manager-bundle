@@ -6,11 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed
-- Fixed incorrect imports in AdaptiveEntityManagerFactory
-- Updated EntityManagerConfigFactory to support Doctrine ORM 3.x API
-- Replaced deprecated annotation driver with AttributeDriver
-- Fixed configuration parameters in ORMSetup::createConfiguration
+### Added
+- Abstract class `AbstractDoctrineEntityDataAdapter` for basic entity adapter implementation
+- Abstract class `AbstractDoctrineEntityDataAdapterProvider` for creating adapter providers
+- Class `AdapterRegistry` for managing multiple adapter providers
+- Compiler pass `EntityAdapterPass` for collecting tagged adapter providers
+- Service tag `adaptive_entity_manager.adapter_provider` for registering providers
+
+### Changed
+- Moved adapter logic to abstract classes for extensibility
+- Changed service structure to support multiple adapter providers
+- Updated service configuration to use adapter registry
+
+### Removed
+- Removed class `BundleEntityDataAdapter` (replaced with `AbstractDoctrineEntityDataAdapter`)
+- Removed class `BundleEntityDataAdapterProvider` (replaced with `AbstractDoctrineEntityDataAdapterProvider`)
+- Removed concrete adapter implementations from bundle (should be in project now)
 
 ## [0.2.0] - 2025-05-30
 

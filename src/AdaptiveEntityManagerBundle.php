@@ -2,7 +2,7 @@
 
 namespace Kabiroman\AdaptiveEntityManagerBundle;
 
-use Kabiroman\AdaptiveEntityManagerBundle\DependencyInjection\Compiler\EntityManagerPass;
+use Kabiroman\AdaptiveEntityManagerBundle\DependencyInjection\Compiler\EntityAdapterPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -12,6 +12,6 @@ class AdaptiveEntityManagerBundle extends Bundle
     {
         parent::build($container);
 
-        $container->addCompilerPass(new EntityManagerPass());
+        $container->addCompilerPass(new EntityAdapterPass());
     }
 }

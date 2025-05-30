@@ -1,6 +1,6 @@
 # AdaptiveEntityManagerBundle
 
-Symfony bundle for integrating `kabiroman/adaptive-entity-manager` with support for multiple EntityManagers.
+Symfony bundle for integrating [kabiroman/adaptive-entity-manager](https://github.com/kabiroman/adaptive-entity-manager) with Symfony projects.
 
 ## Installation
 
@@ -10,98 +10,16 @@ composer require kabiroman/adaptive-entity-manager-bundle
 
 ## Configuration
 
-### Basic Configuration
-
-Create configuration file `config/packages/adaptive_entity_manager.yaml`:
-
 ```yaml
-adaptive_entity_manager:
-    # EntityManager service ID to use (optional, defaults to doctrine.orm.default_entity_manager)
-    entity_manager: 'doctrine.orm.default_entity_manager'
-    
-    # Directory for bundle entities (optional)
-    entities_dir: '%kernel.project_dir%/src/Entity/AdaptiveManager'
-    
-    # Namespace for bundle entities (optional)
-    entities_namespace: 'App\Entity\AdaptiveManager'
-```
-
-### Configuration Examples
-
-#### Using with Multiple Databases
-
-##### MySQL Configuration:
-
-```yaml
-# config/packages/doctrine.yaml
-doctrine:
-    dbal:
-        connections:
-            mysql:
-                url: '%env(resolve:MYSQL_URL)%'
-                driver: pdo_mysql
-    orm:
-        entity_managers:
-            mysql:
-                connection: mysql
-                # ... other configuration
-
 # config/packages/adaptive_entity_manager.yaml
 adaptive_entity_manager:
-    entity_manager: 'doctrine.orm.mysql_entity_manager'
-    entities_dir: '%kernel.project_dir%/src/Entity/Mysql/AdaptiveManager'
-    entities_namespace: 'App\Entity\Mysql\AdaptiveManager'
-```
-
-##### PostgreSQL Configuration:
-
-```yaml
-# config/packages/doctrine.yaml
-doctrine:
-    dbal:
-        connections:
-            pgsql:
-                url: '%env(resolve:DATABASE_URL)%'
-                driver: pdo_pgsql
-    orm:
-        entity_managers:
-            default:
-                connection: pgsql
-                # ... other configuration
-
-# config/packages/adaptive_entity_manager.yaml
-adaptive_entity_manager:
-    entity_manager: 'doctrine.orm.default_entity_manager'
-    entities_dir: '%kernel.project_dir%/src/Entity/Postgres/AdaptiveManager'
-    entities_namespace: 'App\Entity\Postgres\AdaptiveManager'
+    entities_dir: '%kernel.project_dir%/src/Entity'
+    entities_namespace: 'App\Entity'
 ```
 
 ## Usage
 
-### Entity Configuration
-
-The bundle uses PHP 8 attributes for entity mapping. Create your entities like this:
-
-```php
-use Doctrine\ORM\Mapping as ORM;
-
-#[ORM\Entity]
-#[ORM\Table(name: 'your_table')]
-class YourEntity
-{
-    #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    #[ORM\Column]
-    private ?int $id = null;
-
-    #[ORM\Column(length: 255)]
-    private string $name;
-
-    // ... getters and setters
-}
-```
-
-### In Services
+### Basic Usage
 
 ```php
 use Kabiroman\AEM\AdaptiveEntityManager;
@@ -109,73 +27,120 @@ use Kabiroman\AEM\AdaptiveEntityManager;
 class YourService
 {
     public function __construct(
-        private AdaptiveEntityManager $adaptiveEntityManager
+        private readonly AdaptiveEntityManager $adaptiveEntityManager
     ) {}
 
     public function someMethod(): void
     {
-        // Create new entity
-        $entity = $this->adaptiveEntityManager->create('App\Entity\YourEntity', [
-            'field1' => 'value1',
-            'field2' => 'value2'
-        ]);
+        $data = [
+            'name' => 'John Doe',
+            'email' => 'john@example.com'
+        ];
 
-        // Save entity
-        $this->adaptiveEntityManager->save($entity);
+        // Create record
+        $user = $this->adaptiveEntityManager->insert(User::class, $data);
 
-        // Find entity
-        $entity = $this->adaptiveEntityManager->find('App\Entity\YourEntity', 1);
+        // Update record
+        $this->adaptiveEntityManager->update(User::class, ['id' => $user['id']], $data);
 
-        // Update entity
-        $this->adaptiveEntityManager->update($entity, [
-            'field1' => 'new value'
-        ]);
+        // Load record
+        $user = $this->adaptiveEntityManager->loadById(User::class, ['id' => 1]);
+
+        // Delete record
+        $this->adaptiveEntityManager->delete(User::class, ['id' => 1]);
     }
 }
 ```
 
-### In Controllers
+### Creating Custom Adapters
+
+The bundle provides abstract classes for creating your own entity adapters:
+
+1. Create an adapter for a specific entity:
 
 ```php
-use Kabiroman\AEM\AdaptiveEntityManager;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
+namespace App\EntityAdapter;
 
-class YourController extends AbstractController
+use Kabiroman\AdaptiveEntityManagerBundle\DataAdapter\AbstractDoctrineEntityDataAdapter;
+
+class UserEntityAdapter extends AbstractDoctrineEntityDataAdapter
 {
-    public function __construct(
-        private AdaptiveEntityManager $adaptiveEntityManager
-    ) {}
-
-    public function action(): Response
+    protected function convertEntityToArray(object $entity): array
     {
-        $entity = $this->adaptiveEntityManager->find('App\Entity\YourEntity', 1);
-        // ...
+        // Basic conversion
+        $data = parent::convertEntityToArray($entity);
+        
+        // Add custom fields
+        $data['fullName'] = $entity->getFirstName() . ' ' . $entity->getLastName();
+        
+        return $data;
+    }
+
+    protected function updateEntityFromArray(object $entity, array $data): void
+    {
+        // Handle custom fields
+        if (isset($data['fullName'])) {
+            [$firstName, $lastName] = explode(' ', $data['fullName']);
+            $data['firstName'] = $firstName;
+            $data['lastName'] = $lastName;
+            unset($data['fullName']);
+        }
+
+        // Basic update
+        parent::updateEntityFromArray($entity, $data);
     }
 }
 ```
 
-## Features
+2. Create an adapter provider:
 
-- Flexible integration with any Doctrine EntityManager
-- Support for multiple databases
-- Configurable entity locations
-- Simple entity management interface
-- Automatic Symfony DI integration
-- Zero configuration with sensible defaults
-- Clean and maintainable codebase
-- Full support for Doctrine ORM 3.x with PHP 8 attributes
+```php
+namespace App\EntityAdapter;
 
-## Requirements
+use App\Entity\User;
+use Kabiroman\AdaptiveEntityManagerBundle\DataAdapter\AbstractDoctrineEntityDataAdapterProvider;
+use Kabiroman\AEM\DataAdapter\EntityDataAdapter;
 
-- PHP 8.1 or higher
-- Symfony 6.0 or higher
-- Doctrine ORM 3.0 or higher
+class ProjectEntityAdapterProvider extends AbstractDoctrineEntityDataAdapterProvider
+{
+    protected function createAdapter(string $entityClass): EntityDataAdapter
+    {
+        return match ($entityClass) {
+            User::class => new UserEntityAdapter($this->entityManager, $entityClass),
+            default => throw new \RuntimeException("No adapter for $entityClass")
+        };
+    }
+}
+```
 
-## Contributing
+3. Register the provider in services:
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+```yaml
+# config/services.yaml
+services:
+    App\EntityAdapter\ProjectEntityAdapterProvider:
+        arguments:
+            - '@doctrine.orm.entity_manager'
+        tags:
+            - { name: 'adaptive_entity_manager.adapter_provider' }
+```
+
+### How It Works
+
+1. The bundle uses Symfony's tag system to collect all adapter providers
+2. Each provider can handle a specific set of entities
+3. When requesting an adapter for an entity:
+   - AdaptiveEntityManager calls AdapterRegistry
+   - The registry iterates through all registered providers
+   - The first provider that can handle the entity provides the adapter
+   - If no provider can handle the entity, an exception is thrown
+
+This allows you to:
+- Keep adapters in your project code, not in the bundle
+- Have different adapters for different entities
+- Easily add new adapters
+- Override entity handling logic for specific cases
 
 ## License
 
-This bundle is released under the MIT license. 
+MIT License. See [LICENSE](LICENSE) file for details. 

@@ -36,3 +36,11 @@ services:
     adaptive_entity_manager.manager:
         class: Kabiroman\AEM\AdaptiveEntityManager
         factory: ['@adaptive_entity_manager.factory', 'create']
+
+    adaptive_entity_manager.adapter_registry:
+        class: Kabiroman\AdaptiveEntityManagerBundle\DataAdapter\AdapterRegistry
+        public: true
+
+    # Этот алиас позволит использовать реестр как основной провайдер адаптеров
+    Kabiroman\AEM\DataAdapter\EntityDataAdapterProvider:
+        alias: adaptive_entity_manager.adapter_registry
