@@ -29,3 +29,4 @@ class AdaptiveEntityManagerExtension extends Extension
         return 'adaptive_entity_manager';
     }
 }
+ 
