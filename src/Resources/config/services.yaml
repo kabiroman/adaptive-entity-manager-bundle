@@ -9,27 +9,30 @@ services:
             - '../../DependencyInjection/'
             - '../../Resources/'
             - '../../Tests/'
+            - '../../Entity/'
 
-    Kabiroman\AdaptiveEntityManagerBundle\Connection\DoctrineTransactionalConnection:
-        arguments:
-            $connection: '@doctrine.dbal.default_connection'
-
-    Kabiroman\AEM\TransactionalConnection:
-        alias: Kabiroman\AdaptiveEntityManagerBundle\Connection\DoctrineTransactionalConnection
-
+    # Основной сервис для работы с сущностями
     Kabiroman\AdaptiveEntityManagerBundle\DataAdapter\BundleEntityDataAdapterProvider:
         arguments:
-            $entityManager: '@doctrine.orm.entity_manager'
+            $entityManager: '@.adaptive_entity_manager.doctrine_manager'
 
     Kabiroman\AEM\DataAdapter\EntityDataAdapterProvider:
         alias: Kabiroman\AdaptiveEntityManagerBundle\DataAdapter\BundleEntityDataAdapterProvider
 
+    # Приватный сервис для получения Doctrine EntityManager
+    .adaptive_entity_manager.doctrine_manager:
+        synthetic: true
+        public: true
+
+    # Фабрика для создания AdaptiveEntityManager
     adaptive_entity_manager.factory:
         class: Kabiroman\AdaptiveEntityManagerBundle\Service\AdaptiveEntityManagerFactory
         arguments:
-            $entityManager: '@doctrine.orm.entity_manager'
-            $config: '%adaptive_entity_manager.config%'
+            $entityManager: '@.adaptive_entity_manager.doctrine_manager'
+            $entitiesDir: '%adaptive_entity_manager.entities_dir%'
+            $entitiesNamespace: '%adaptive_entity_manager.entities_namespace%'
 
+    # Основной сервис AdaptiveEntityManager
     adaptive_entity_manager.manager:
         class: Kabiroman\AEM\AdaptiveEntityManager
         factory: ['@adaptive_entity_manager.factory', 'create']

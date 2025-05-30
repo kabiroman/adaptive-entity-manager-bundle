@@ -1,78 +1,157 @@
 # AdaptiveEntityManagerBundle
 
-Symfony bundle для интеграции пакета `kabiroman/adaptive-entity-manager`.
+Symfony bundle for integrating `kabiroman/adaptive-entity-manager` with support for multiple EntityManagers.
 
-## Установка
+## Installation
 
 ```bash
 composer require kabiroman/adaptive-entity-manager-bundle
 ```
 
-## Конфигурация
+## Configuration
 
-Создайте файл конфигурации `config/packages/adaptive_entity_manager.yaml`:
+### Basic Configuration
+
+Create configuration file `config/packages/adaptive_entity_manager.yaml`:
 
 ```yaml
 adaptive_entity_manager:
-    entities:
-        user:  # Пример конфигурации
-            class: App\Entity\User
-            fields:
-                name:
-                    type: string
-                    options:
-                        maxLength: 255
-                email:
-                    type: string
-                    options:
-                        maxLength: 255
-                age:
-                    type: integer
+    # EntityManager service ID to use (optional, defaults to doctrine.orm.default_entity_manager)
+    entity_manager: 'doctrine.orm.default_entity_manager'
+    
+    # Directory for bundle entities (optional)
+    entities_dir: '%kernel.project_dir%/src/Entity/AdaptiveManager'
+    
+    # Namespace for bundle entities (optional)
+    entities_namespace: 'App\Entity\AdaptiveManager'
 ```
 
-## Использование
+### Configuration Examples
 
-Вы можете использовать сервис бандла в ваших контроллерах или сервисах:
+#### Using with Multiple Databases
+
+##### MySQL Configuration:
+
+```yaml
+# config/packages/doctrine.yaml
+doctrine:
+    dbal:
+        connections:
+            mysql:
+                url: '%env(resolve:MYSQL_URL)%'
+                driver: pdo_mysql
+    orm:
+        entity_managers:
+            mysql:
+                connection: mysql
+                # ... other configuration
+
+# config/packages/adaptive_entity_manager.yaml
+adaptive_entity_manager:
+    entity_manager: 'doctrine.orm.mysql_entity_manager'
+    entities_dir: '%kernel.project_dir%/src/Entity/Mysql/AdaptiveManager'
+    entities_namespace: 'App\Entity\Mysql\AdaptiveManager'
+```
+
+##### PostgreSQL Configuration:
+
+```yaml
+# config/packages/doctrine.yaml
+doctrine:
+    dbal:
+        connections:
+            pgsql:
+                url: '%env(resolve:DATABASE_URL)%'
+                driver: pdo_pgsql
+    orm:
+        entity_managers:
+            default:
+                connection: pgsql
+                # ... other configuration
+
+# config/packages/adaptive_entity_manager.yaml
+adaptive_entity_manager:
+    entity_manager: 'doctrine.orm.default_entity_manager'
+    entities_dir: '%kernel.project_dir%/src/Entity/Postgres/AdaptiveManager'
+    entities_namespace: 'App\Entity\Postgres\AdaptiveManager'
+```
+
+## Usage
+
+### In Services
 
 ```php
-use Kabiroman\AdaptiveEntityManagerBundle\Service\AdaptiveEntityManagerService;
+use Kabiroman\AEM\AdaptiveEntityManager;
 
-class YourController
+class YourService
 {
     public function __construct(
-        private AdaptiveEntityManagerService $adaptiveEntityManager
+        private AdaptiveEntityManager $adaptiveEntityManager
     ) {}
 
-    public function someAction()
+    public function someMethod(): void
     {
-        // Создание новой сущности
-        $entity = $this->adaptiveEntityManager->create(User::class, [
-            'name' => 'John Doe',
-            'email' => 'john@example.com',
-            'age' => 30
+        // Create new entity
+        $entity = $this->adaptiveEntityManager->create('App\Entity\YourEntity', [
+            'field1' => 'value1',
+            'field2' => 'value2'
         ]);
 
-        // Обновление существующей сущности
-        $this->adaptiveEntityManager->update($entity, [
-            'name' => 'Jane Doe'
-        ]);
-
-        // Сохранение изменений
+        // Save entity
         $this->adaptiveEntityManager->save($entity);
 
-        // Получение экземпляра AdaptiveEntityManager
-        $manager = $this->adaptiveEntityManager->getManager();
+        // Find entity
+        $entity = $this->adaptiveEntityManager->find('App\Entity\YourEntity', 1);
+
+        // Update entity
+        $this->adaptiveEntityManager->update($entity, [
+            'field1' => 'new value'
+        ]);
     }
 }
 ```
 
-## Возможности
+### In Controllers
 
-- Интеграция с Symfony Dependency Injection
-- Типобезопасное управление сущностями
-- Автоматическая регистрация сущностей на основе конфигурации
-- Простой интерфейс сервиса
+```php
+use Kabiroman\AEM\AdaptiveEntityManager;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 
-## Лицензия
+class YourController extends AbstractController
+{
+    public function __construct(
+        private AdaptiveEntityManager $adaptiveEntityManager
+    ) {}
 
-Этот бандл распространяется под лицензией MIT. 
+    public function action(): Response
+    {
+        $entity = $this->adaptiveEntityManager->find('App\Entity\YourEntity', 1);
+        // ...
+    }
+}
+```
+
+## Features
+
+- Flexible integration with any Doctrine EntityManager
+- Support for multiple databases
+- Configurable entity locations
+- Simple entity management interface
+- Automatic Symfony DI integration
+- Zero configuration with sensible defaults
+- Clean and maintainable codebase
+
+## Requirements
+
+- PHP 8.1 or higher
+- Symfony 6.0 or higher
+- Doctrine ORM 3.0 or higher
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This bundle is released under the MIT license. 
