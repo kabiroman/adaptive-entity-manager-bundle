@@ -12,7 +12,7 @@ services:
             - '../../Entity/'
 
     # Private service for Doctrine EntityManager
-    .adaptive_entity_manager.doctrine_manager:
+    adaptive_entity_manager.doctrine_manager:
         synthetic: true
         public: true
 
@@ -20,16 +20,9 @@ services:
     adaptive_entity_manager.factory:
         class: Kabiroman\AdaptiveEntityManagerBundle\Service\AdaptiveEntityManagerFactory
         arguments:
-            $entityManager: '@.adaptive_entity_manager.doctrine_manager'
+            $entityManager: '@adaptive_entity_manager.doctrine_manager'
             $entitiesDir: '%adaptive_entity_manager.entities_dir%'
             $entitiesNamespace: '%adaptive_entity_manager.entities_namespace%'
-
-    # Main AdaptiveEntityManager service
-    adaptive_entity_manager.manager:
-        class: Kabiroman\AEM\AdaptiveEntityManager
-        factory: ['@adaptive_entity_manager.factory', 'create']
-        arguments:
-            $adapterProvider: '@adaptive_entity_manager.adapter_registry'
 
     # Adapter registry service
     adaptive_entity_manager.adapter_registry:
