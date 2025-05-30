@@ -1,0 +1,24 @@
+adaptive_entity_manager:
+    entities:
+        user:  # Это имя можно опустить, тогда оно будет взято из имени файла
+            class: App\Entity\User
+            fields:
+                id:
+                    type: integer
+                    id: true
+                    options:
+                        nullable: false
+                name:
+                    type: string
+                    options:
+                        maxLength: 255
+                        nullable: false
+                email:
+                    type: string
+                    options:
+                        maxLength: 255
+                        nullable: false
+                age:
+                    type: integer
+                    options:
+                        nullable: true 

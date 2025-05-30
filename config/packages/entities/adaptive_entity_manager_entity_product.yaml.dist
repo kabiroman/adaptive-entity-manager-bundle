@@ -1,0 +1,25 @@
+adaptive_entity_manager:
+    entities:
+        # Имя сущности можно опустить, оно будет взято из имени файла (product)
+        class: App\Entity\Product
+        fields:
+            id:
+                type: integer
+                id: true
+                options:
+                    nullable: false
+            title:
+                type: string
+                options:
+                    maxLength: 255
+                    nullable: false
+            price:
+                type: decimal
+                options:
+                    precision: 10
+                    scale: 2
+                    nullable: false
+            description:
+                type: text
+                options:
+                    nullable: true 

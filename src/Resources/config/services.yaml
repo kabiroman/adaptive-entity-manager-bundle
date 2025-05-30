@@ -1,0 +1,35 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    Kabiroman\AdaptiveEntityManagerBundle\:
+        resource: '../../'
+        exclude:
+            - '../../DependencyInjection/'
+            - '../../Resources/'
+            - '../../Tests/'
+
+    Kabiroman\AdaptiveEntityManagerBundle\Connection\DoctrineTransactionalConnection:
+        arguments:
+            $connection: '@doctrine.dbal.default_connection'
+
+    Kabiroman\AEM\TransactionalConnection:
+        alias: Kabiroman\AdaptiveEntityManagerBundle\Connection\DoctrineTransactionalConnection
+
+    Kabiroman\AdaptiveEntityManagerBundle\DataAdapter\BundleEntityDataAdapterProvider:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    Kabiroman\AEM\DataAdapter\EntityDataAdapterProvider:
+        alias: Kabiroman\AdaptiveEntityManagerBundle\DataAdapter\BundleEntityDataAdapterProvider
+
+    adaptive_entity_manager.factory:
+        class: Kabiroman\AdaptiveEntityManagerBundle\Service\AdaptiveEntityManagerFactory
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $config: '%adaptive_entity_manager.config%'
+
+    adaptive_entity_manager.manager:
+        class: Kabiroman\AEM\AdaptiveEntityManager
+        factory: ['@adaptive_entity_manager.factory', 'create']
