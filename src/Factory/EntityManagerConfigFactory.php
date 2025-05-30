@@ -4,25 +4,23 @@ namespace Kabiroman\AdaptiveEntityManagerBundle\Factory;
 
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\ORMSetup;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 
 class EntityManagerConfigFactory
 {
     public static function create(string $bundleDir, string $cacheDir): Configuration
     {
         $config = ORMSetup::createConfiguration(
-            isDev: true,
-            cache: null,
-            attributeReader: null
+            isDevMode: true,
+            proxyDir: $cacheDir . '/proxies'
         );
 
-        $config->setMetadataDriverImpl(
-            $config->newDefaultAnnotationDriver(
-                [$bundleDir . '/src/Entity'],
-                false
-            )
-        );
+        // Настраиваем драйвер для атрибутов (аннотаций)
+        $paths = [$bundleDir . '/src/Entity'];
+        $driver = new AttributeDriver($paths);
+        $config->setMetadataDriverImpl($driver);
 
-        $config->setProxyDir($cacheDir . '/proxies');
+        // Настраиваем namespace для прокси-классов
         $config->setProxyNamespace('AdaptiveEntityManagerBundle\Proxies');
 
         return $config;

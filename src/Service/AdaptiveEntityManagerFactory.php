@@ -4,7 +4,7 @@ namespace Kabiroman\AdaptiveEntityManagerBundle\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Kabiroman\AEM\AdaptiveEntityManager;
-use Kabiroman\AEM\Configuration\EntityConfiguration;
+use Kabiroman\AEM\Config;
 
 class AdaptiveEntityManagerFactory
 {
@@ -17,9 +17,11 @@ class AdaptiveEntityManagerFactory
 
     public function create(): AdaptiveEntityManager
     {
-        $config = new EntityConfiguration();
-        $config->setEntityFolder($this->entitiesDir);
-        $config->setEntityNamespace($this->entitiesNamespace);
+        $config = new Config(
+            entityFolder: $this->entitiesDir,
+            entityNamespace: $this->entitiesNamespace,
+            cacheFolder: sys_get_temp_dir() . '/adaptive-entity-manager'
+        );
         
         return new AdaptiveEntityManager(
             $this->entityManager,

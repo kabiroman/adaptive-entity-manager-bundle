@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Fixed incorrect imports in AdaptiveEntityManagerFactory
+- Updated EntityManagerConfigFactory to support Doctrine ORM 3.x API
+- Replaced deprecated annotation driver with AttributeDriver
+- Fixed configuration parameters in ORMSetup::createConfiguration
+
 ## [0.2.0] - 2025-05-30
 
 ### Added

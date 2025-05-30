@@ -78,6 +78,29 @@ adaptive_entity_manager:
 
 ## Usage
 
+### Entity Configuration
+
+The bundle uses PHP 8 attributes for entity mapping. Create your entities like this:
+
+```php
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity]
+#[ORM\Table(name: 'your_table')]
+class YourEntity
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\Column(length: 255)]
+    private string $name;
+
+    // ... getters and setters
+}
+```
+
 ### In Services
 
 ```php
@@ -141,6 +164,7 @@ class YourController extends AbstractController
 - Automatic Symfony DI integration
 - Zero configuration with sensible defaults
 - Clean and maintainable codebase
+- Full support for Doctrine ORM 3.x with PHP 8 attributes
 
 ## Requirements
 
