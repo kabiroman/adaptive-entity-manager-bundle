@@ -267,14 +267,16 @@ class UserController extends AbstractController
     public function createAction(): Response
     {
         // Create user in storage
-        $identifier = $this->adaptiveEntityManager->insert(User::class, [
-            'firstName' => 'John',
-            'lastName' => 'Doe',
-            'email' => 'john@example.com'
-        ]);
+        $userEntity = new User();
+        $userEntity->setFirstName('John');
+        $userEntity->setLastName('Doe');
+        $userEntity->setEmail('john@example.com');
+
+        $this->adaptiveEntityManager->persist($userEntity);
+        $this->adaptiveEntityManager->flush();
 
         // Load user data from storage
-        $userData = $this->adaptiveEntityManager->loadById(User::class, $identifier);
+        $userData = $this->adaptiveEntityManager->loadById(User::class, $userEntity->getId());
 
         return $this->json($userData);
     }
@@ -282,13 +284,7 @@ class UserController extends AbstractController
     public function listAction(): Response
     {
         // Load users with criteria
-        $users = $this->adaptiveEntityManager->loadAll(
-            User::class,
-            ['lastName' => 'Doe'],
-            ['firstName' => 'ASC'],
-            10,
-            0
-        );
+        $users = $this->adaptiveEntityManager->getRepository(User::class)->findBy(['lastName' => 'Doe'], ['firstName' => 'ASC'], 10, 0);
 
         return $this->json($users);
     }
@@ -303,4 +299,33 @@ The AdaptiveEntityManager will:
 
 ## License
 
-MIT License. See [LICENSE](LICENSE) file for details. 
+MIT License. See [LICENSE](LICENSE) file for details.
+
+## Detailed Class Overview
+
+### AdapterRegistry
+This class manages the registration and selection of entity adapters. It implements EntityDataAdapterProvider and allows adding providers dynamically to handle different data sources.
+
+### AbstractDoctrineEntityDataAdapterProvider
+This abstract class provides a base for Doctrine-specific adapters. It integrates with Doctrine's EntityManager and requires subclasses to implement the creation of adapters for entities. 
+
+Note: Methods such as insert(), loadById(), and loadAll() are provided by the AdaptiveEntityManager class in the kabiroman/adaptive-entity-manager package. This bundle only facilitates their integration.
+
+## Enhanced Class Details
+
+### AdaptiveEntityManager Class
+The AdaptiveEntityManager is a final class that implements the EntityManagerInterface, providing full ORM functionality with methods like find(), persist(), remove(), and flush(). It handles entity management, transactions, and data adapters for seamless integration with various storage systems.
+
+- **Key Methods:**
+  - `find(string $className, mixed $id)`: Retrieves an entity by ID.
+  - `persist(object $object)`: Schedules an entity for insertion.
+  - `remove(object $object)`: Schedules an entity for deletion.
+  - `flush()`: Commits changes to the storage.
+
+This ensures the bundle's documentation aligns with the actual implementation. 
+
+## Best Practices and Common Pitfalls
+
+- Use AdaptiveEntityManager methods like persist and findBy directly; avoid calling adapter methods from your application code.
+- Handle exceptions in flush() for transaction errors.
+- Always check for entity existence before operations. 
