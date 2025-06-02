@@ -20,13 +20,13 @@ class EntityManagerPass implements CompilerPassInterface
             throw new \RuntimeException(sprintf('The entity manager service "%s" does not exist', $entityManagerId));
         }
 
-        $container->getDefinition('.adaptive_entity_manager.doctrine_manager')
+        $container->getDefinition('adaptive_entity_manager.doctrine_manager')
             ->setSynthetic(true)
             ->setPublic(true);
 
-        $container->register('.adaptive_entity_manager.doctrine_manager.inner', 'Doctrine\ORM\EntityManagerInterface')
+        $container->register('adaptive_entity_manager.doctrine_manager.inner', 'Doctrine\ORM\EntityManagerInterface')
             ->setFactory([new Reference('service_container'), 'get'])
             ->setArguments([$entityManagerId])
             ->setPublic(false);
     }
-} 
+}

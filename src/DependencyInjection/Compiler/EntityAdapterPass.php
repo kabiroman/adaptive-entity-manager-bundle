@@ -23,4 +23,4 @@ class EntityAdapterPass implements CompilerPassInterface
             $definition->addMethodCall('addProvider', [new Reference($id)]);
         }
     }
-} 
+}

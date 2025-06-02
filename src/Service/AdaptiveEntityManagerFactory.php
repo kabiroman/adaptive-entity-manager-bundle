@@ -2,30 +2,29 @@
 
 namespace Kabiroman\AdaptiveEntityManagerBundle\Service;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Kabiroman\AEM\AdaptiveEntityManager;
 use Kabiroman\AEM\Config;
+use Kabiroman\AEM\Metadata\ClassMetadataProvider;
+use Kabiroman\AEM\DataAdapter\EntityDataAdapterProvider;
+use Doctrine\DBAL\Connection as TransactionalConnection;
 
 class AdaptiveEntityManagerFactory
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly string $entitiesDir,
-        private readonly string $entitiesNamespace
+        private readonly Config $config,
+        private readonly ClassMetadataProvider $classMetadataProvider,
+        private readonly EntityDataAdapterProvider $entityDataAdapterProvider,
+        private readonly ?TransactionalConnection $transactionalConnection = null
     ) {
     }
 
     public function create(): AdaptiveEntityManager
     {
-        $config = new Config(
-            entityFolder: $this->entitiesDir,
-            entityNamespace: $this->entitiesNamespace,
-            cacheFolder: sys_get_temp_dir() . '/adaptive-entity-manager'
-        );
-        
         return new AdaptiveEntityManager(
-            $this->entityManager,
-            $config
+            $this->config,
+            $this->classMetadataProvider,
+            $this->entityDataAdapterProvider,
+            $this->transactionalConnection
         );
     }
 }

@@ -12,24 +12,29 @@ services:
             - '../../Entity/'
 
     # Private service for Doctrine EntityManager
-    .adaptive_entity_manager.doctrine_manager:
-        synthetic: true
-        public: true
+#    adaptive_entity_manager.doctrine_manager:
+#        synthetic: true
+#        public: true
 
     # AdaptiveEntityManager factory
     adaptive_entity_manager.factory:
         class: Kabiroman\AdaptiveEntityManagerBundle\Service\AdaptiveEntityManagerFactory
         arguments:
-            $entityManager: '@.adaptive_entity_manager.doctrine_manager'
-            $entitiesDir: '%adaptive_entity_manager.entities_dir%'
-            $entitiesNamespace: '%adaptive_entity_manager.entities_namespace%'
+            $config: '@Kabiroman\AEM\Config'
+            $classMetadataProvider: '@Kabiroman\AEM\Metadata\DefaultEntityMetadataProvider'
+            $entityDataAdapterProvider: '@Kabiroman\AEM\DataAdapter\DefaultEntityDataAdapterProvider'
+            $transactionalConnection: '@?Kabiroman\AdaptiveEntityManagerBundle\Connection\DoctrineTransactionalConnection'
+        public: true
+        shared: true
 
     # Main AdaptiveEntityManager service
-    adaptive_entity_manager.manager:
+    adaptive_entity_manager.entity_manager:
         class: Kabiroman\AEM\AdaptiveEntityManager
         factory: ['@adaptive_entity_manager.factory', 'create']
         arguments:
             $adapterProvider: '@adaptive_entity_manager.adapter_registry'
+        shared: true
+        tags: ['doctrine.entity_manager']
 
     # Adapter registry service
     adaptive_entity_manager.adapter_registry:
@@ -40,3 +45,15 @@ services:
     Kabiroman\AEM\DataAdapter\EntityDataAdapterProvider:
         alias: adaptive_entity_manager.adapter_registry
         public: true
+
+    Kabiroman\AEM\Config:
+        arguments:
+            $entityFolder: '%adaptive_entity_manager.entities_dir%'
+            $entityNamespace: '%adaptive_entity_manager.entities_namespace%'
+            $cacheFolder: '%kernel.cache_dir%'
+
+    Kabiroman\AdaptiveEntityManagerBundle\Connection\DoctrineTransactionalConnection:
+        arguments:
+            $connection: '@doctrine.dbal.default_connection'  # Adjust if the constructor requires this or other arguments
+        public: true
+        shared: true
