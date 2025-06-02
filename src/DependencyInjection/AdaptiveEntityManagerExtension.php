@@ -25,9 +25,7 @@ class AdaptiveEntityManagerExtension extends Extension
             $entities = [];
             foreach ($finder as $file) {
                 $fileConfig = Yaml::parse($file->getContents());
-                if (isset($fileConfig['adaptive_entity_manager']['entities'])) {
-                    $entities = array_merge($entities, $fileConfig['adaptive_entity_manager']['entities']);
-                }
+                $entities = array_merge($entities, $fileConfig);
             }
             $config['entities'] = array_merge($config['entities'], $entities);
         }
