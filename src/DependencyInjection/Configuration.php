@@ -14,10 +14,6 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('data_adapter_entity_manager')
-                    ->info('The service ID of the Doctrine EntityManager to use')
-                    ->defaultValue('doctrine.orm.default_entity_manager')
-                ->end()
                 ->scalarNode('entities_dir')
                     ->info('Directory where bundle entities will be stored')
                     ->defaultValue('%kernel.project_dir%/src/Entity/AdaptiveManager')
