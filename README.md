@@ -28,6 +28,39 @@ adaptive_entity_manager:
     entities_dir: '%kernel.project_dir%/src/Entity/AdaptiveManager'
     entities_namespace: 'App\Entity\AdaptiveManager'
 ```
+
+### Configuring Adaptive Entity Metadata
+Adaptive entities allow dynamic definition of entity metadata via YAML files. Each YAML file in the `config/packages/adaptive_entities/` directory should define the structure of an entity, including fields, types, and other metadata.
+
+#### Example YAML for an Entity
+```yaml
+# config/packages/adaptive_entities/user.yaml
+App\Entity\User:
+  id:
+    id:
+      column: id
+      type: integer
+      nullable: false
+  fields:
+    login:
+      column: login
+      type: string
+      nullable: false
+  hasOne:
+    role:
+      targetEntity: App\Entity\User\Role
+      joinColumn:
+        name: role_id
+        referencedColumnName: id
+  hasMany:
+    posts:
+      targetEntity: App\Entity\User\Post
+      mappedBy: author
+      fetch: LAZY
+  lifecycleCallbacks:
+    prePersist:
+      - setCreatedAt
+```
 For automated entity loading, place individual YAML files in `config/packages/adaptive_entities/`.
 
 ## Usage
