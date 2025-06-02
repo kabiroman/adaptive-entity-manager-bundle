@@ -21,11 +21,13 @@ class AdapterRegistry implements EntityDataAdapterProvider
     public function getAdapter(ClassMetadata $metadata): EntityDataAdapter
     {
         $lastException = null;
-        
+
         foreach ($this->adapters as $adapter) {
             try {
-                return $adapter;
-            } catch (\RuntimeException $e) {
+                if (get_class($adapter) === $metadata->getEntityDataAdapterClass()) {
+                    return $adapter;
+                }
+            } catch (\Throwable $e) {
                 $lastException = $e;
                 continue;
             }
