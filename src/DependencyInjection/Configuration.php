@@ -26,11 +26,6 @@ class Configuration implements ConfigurationInterface
                     ->info('Namespace for bundle entities')
                     ->defaultValue('App\Entity\AdaptiveManager')
                 ->end()
-                ->arrayNode('entities')
-                    ->scalarPrototype()->end()
-                    ->info('List of fully qualified class names for entities')
-                    ->defaultValue([])
-                ->end()
             ->end();
 
         return $treeBuilder;

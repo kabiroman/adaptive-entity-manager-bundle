@@ -6,6 +6,8 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Yaml\Yaml;
 
 class AdaptiveEntityManagerExtension extends Extension
 {
@@ -13,6 +15,22 @@ class AdaptiveEntityManagerExtension extends Extension
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
+        $config['entities'] = [];
+
+        // Automatic loading of objects from YAML files
+        $entitiesDir = $container->getParameter('kernel.project_dir') . '/config/packages/adaptive_entities/';
+        if (is_dir($entitiesDir)) {
+            $finder = new Finder();
+            $finder->files()->in($entitiesDir)->name('*.yaml');
+            $entities = [];
+            foreach ($finder as $file) {
+                $fileConfig = Yaml::parse($file->getContents());
+                if (isset($fileConfig['adaptive_entity_manager']['entities'])) {
+                    $entities = array_merge($entities, $fileConfig['adaptive_entity_manager']['entities']);
+                }
+            }
+            $config['entities'] = array_merge($config['entities'], $entities);
+        }
 
         // Validate and set parameters for ClassMetadataProvider and EntityManager
         if (!isset($config['entities_dir'])) {

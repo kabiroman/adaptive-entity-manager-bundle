@@ -16,7 +16,7 @@ class EntityClassMetadataProvider implements ClassMetadataProvider
 
     private function initializeMetadata(array $config): void
     {
-        foreach ($config as $entityName => $entityConfig) {
+        foreach ($config['entities'] as $entityName => $entityConfig) {
             $this->entities[$entityName] = new EntityClassMetadata($entityName, $entityConfig);
         }
     }

@@ -1,0 +1,25 @@
+App\Entity\User:
+    id:
+        id:
+            column: id
+            type: integer
+            nullable: false
+    fields:
+        login:
+            column: login
+            type: string
+            nullable: false
+    hasOne:
+        role:
+            targetEntity: App\Entity\User\Role
+            joinColumn:
+                name: role_id
+                referencedColumnName: id
+    hasMany:
+        posts:
+            targetEntity: App\Entity\User\Post
+            mappedBy: author
+            fetch: LAZY
+    lifecycleCallbacks:
+        prePersist:
+            - setCreatedAt
