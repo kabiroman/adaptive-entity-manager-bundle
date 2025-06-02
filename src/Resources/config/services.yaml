@@ -21,7 +21,7 @@ services:
         class: Kabiroman\AdaptiveEntityManagerBundle\Service\AdaptiveEntityManagerFactory
         arguments:
             $config: '@Kabiroman\AEM\Config'
-            $classMetadataProvider: '@EntityClassMetadataProvider'
+            $classMetadataProvider: '@Kabiroman\AdaptiveEntityManagerBundle\Metadata\EntityClassMetadataProvider'
             $entityDataAdapterProvider: '@Kabiroman\AEM\DataAdapter\DefaultEntityDataAdapterProvider'
             $transactionalConnection: '@?Kabiroman\AdaptiveEntityManagerBundle\Connection\DoctrineTransactionalConnection'
         public: true
@@ -58,6 +58,6 @@ services:
         public: true
         shared: true
 
-    Kabiroman\AdaptiveEntityManagerBundle\Metadata\BundleClassMetadataProvider:
+    Kabiroman\AdaptiveEntityManagerBundle\Metadata\EntityClassMetadataProvider:
         arguments:
             $config: '%adaptive_entity_manager.entities%'  # Inject only the entities sub-array
