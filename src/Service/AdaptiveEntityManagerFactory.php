@@ -6,7 +6,7 @@ use Kabiroman\AEM\AdaptiveEntityManager;
 use Kabiroman\AEM\Config;
 use Kabiroman\AEM\Metadata\ClassMetadataProvider;
 use Kabiroman\AEM\DataAdapter\EntityDataAdapterProvider;
-use Doctrine\DBAL\Connection as TransactionalConnection;
+use Kabiroman\AEM\TransactionalConnection;
 
 class AdaptiveEntityManagerFactory
 {
