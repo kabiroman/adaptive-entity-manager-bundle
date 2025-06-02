@@ -26,7 +26,7 @@ Configure the bundle in `config/packages/adaptive_entity_manager.yaml` or via au
 adaptive_entity_manager:
     data_adapter_entity_manager: 'doctrine.orm.default_entity_manager'
     entities_dir: '%kernel.project_dir%/src/Entity/AdaptiveManager'
-    entities_namespace: 'App\Entity\AdaptiveManager'
+    entities_namespace: 'App\Entity\AdaptiveManager\'
 ```
 
 ### Configuring Adaptive Entity Metadata
