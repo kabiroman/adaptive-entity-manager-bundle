@@ -20,7 +20,7 @@ class EntityAdapterPass implements CompilerPassInterface
         $taggedServices = $container->findTaggedServiceIds(self::ADAPTER_TAG);
 
         foreach ($taggedServices as $id => $tags) {
-            $definition->addMethodCall('addProvider', [new Reference($id)]);
+            $definition->addMethodCall('addAdapter', [new Reference($id)]);
         }
     }
 }
