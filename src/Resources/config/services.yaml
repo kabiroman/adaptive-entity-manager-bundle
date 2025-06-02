@@ -28,7 +28,7 @@ services:
         shared: true
 
     # Main AdaptiveEntityManager service
-    adaptive_entity_manager.entity_manager:
+    Kabiroman\AEM\EntityManagerInterface:
         class: Kabiroman\AEM\AdaptiveEntityManager
         factory: ['@adaptive_entity_manager.factory', 'create']
         shared: true
@@ -61,4 +61,4 @@ services:
     adaptive_entity_manager.entity_metadata_provider:
         class: Kabiroman\AdaptiveEntityManagerBundle\Metadata\EntityClassMetadataProvider
         arguments:
-            $config: '%adaptive_entity_manager.entities%'  # Inject only the entities sub-array
+            $config: '%adaptive_entity_manager.entities%'

@@ -16,13 +16,13 @@ class EntityClassMetadataProvider implements ClassMetadataProvider
 
     private function initializeMetadata(array $config): void
     {
-        foreach ($config['entities'] as $entityName => $entityConfig) {
-            $this->entities[$entityName] = new EntityClassMetadata($entityName, $entityConfig);
+        foreach ($config as $entityName => $entityConfig) {
+            $this->entities[md5($entityName)] = new EntityClassMetadata($entityName, $entityConfig);
         }
     }
 
     public function getClassMetadata(string $entityName): ?ClassMetadata
     {
-        return $this->entities[$entityName] ?? null;
+        return $this->entities[md5($entityName)] ?? null;
     }
 }
