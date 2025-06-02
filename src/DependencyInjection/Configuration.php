@@ -14,7 +14,7 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('entity_manager')
+                ->scalarNode('data_adapter_entity_manager')
                     ->info('The service ID of the Doctrine EntityManager to use')
                     ->defaultValue('doctrine.orm.default_entity_manager')
                 ->end()

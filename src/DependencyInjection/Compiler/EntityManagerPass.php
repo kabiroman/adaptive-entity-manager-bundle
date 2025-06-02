@@ -10,11 +10,11 @@ class EntityManagerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
     {
-        if (!$container->hasParameter('adaptive_entity_manager.entity_manager')) {
-            throw new \RuntimeException('The adaptive_entity_manager.entity_manager parameter must be set');
+        if (!$container->hasParameter('adaptive_entity_manager.data_adapter_entity_manager')) {
+            throw new \RuntimeException('The adaptive_entity_manager.data_adapter_entity_manager parameter must be set');
         }
 
-        $entityManagerId = $container->getParameter('adaptive_entity_manager.entity_manager');
+        $entityManagerId = $container->getParameter('adaptive_entity_manager.data_adapter_entity_manager');
         
         if (!$container->hasDefinition($entityManagerId)) {
             throw new \RuntimeException(sprintf('The entity manager service "%s" does not exist', $entityManagerId));

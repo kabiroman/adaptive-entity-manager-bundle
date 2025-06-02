@@ -14,12 +14,19 @@ class AdaptiveEntityManagerExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        // Регистрируем параметры конфигурации
-        $container->setParameter('adaptive_entity_manager.entity_manager', $config['entity_manager']);
+        // Validate and set parameters for ClassMetadataProvider and EntityManager
+        if (!isset($config['entities_dir'])) {
+            throw new \RuntimeException('Parameter "entities_dir" is required for ClassMetadataProvider configuration.');
+        }
+        if (!isset($config['entities_namespace'])) {
+            throw new \RuntimeException('Parameter "entities_namespace" is required for ClassMetadataProvider configuration.');
+        }
+
         $container->setParameter('adaptive_entity_manager.entities_dir', $config['entities_dir']);
         $container->setParameter('adaptive_entity_manager.entities_namespace', $config['entities_namespace']);
+        $container->setParameter('adaptive_entity_manager.data_adapter_entity_manager', $config['data_adapter_entity_manager']);
 
-        // Загружаем сервисы
+        // Load services
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yaml');
     }
