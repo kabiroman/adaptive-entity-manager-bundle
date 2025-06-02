@@ -4,7 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0,3,0] - 2025-05-31
+## [Unreleased]
+
+### Changed
+- Initialized the array `$config['entities'] = [];` to ensure proper handling of entities configuration.
+- Changed the directory path for loading YAML files from `./config/packages/entities/` to `./config/packages/adaptive_entities/` for better organization.
+- Modified the configuration merging logic in the load method to merge the entire content of the YAML file directly.
+- Added a new parameter `$container->setParameter('adaptive_entity_manager.entities', $config['entities']);` to pass the updated configuration.
+
+## [0.3.0] - 2025-05-31
 
 ### Added
 - Abstract class `AbstractDoctrineEntityDataAdapter` for basic entity adapter implementation
@@ -35,7 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Synthetic service for EntityManager injection
 
 ### Changed
-- Reworked bundle configuration system
+- Rewritten bundle configuration system
 - Simplified integration with existing EntityManagers
 - Updated documentation with examples for different databases
 - Optimized service structure
