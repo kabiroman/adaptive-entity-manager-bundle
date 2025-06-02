@@ -9,22 +9,22 @@ use Kabiroman\AEM\DataAdapter\EntityDataAdapterProvider;
 class AdapterRegistry implements EntityDataAdapterProvider
 {
     /**
-     * @var EntityDataAdapterProvider[]
+     * @var EntityDataAdapter[]
      */
-    private array $providers = [];
+    private array $adapters = [];
 
-    public function addProvider(EntityDataAdapterProvider $provider): void
+    public function addAdapter(EntityDataAdapter $adapter): void
     {
-        $this->providers[] = $provider;
+        $this->adapters[] = $adapter;
     }
 
     public function getAdapter(ClassMetadata $metadata): EntityDataAdapter
     {
         $lastException = null;
         
-        foreach ($this->providers as $provider) {
+        foreach ($this->adapters as $adapter) {
             try {
-                return $provider->getAdapter($metadata);
+                return $adapter;
             } catch (\RuntimeException $e) {
                 $lastException = $e;
                 continue;
@@ -35,7 +35,7 @@ class AdapterRegistry implements EntityDataAdapterProvider
             sprintf(
                 'No suitable adapter found for entity "%s". Last error: %s',
                 $metadata->getName(),
-                $lastException ? $lastException->getMessage() : 'No providers available'
+                $lastException ? $lastException->getMessage() : 'No adapters available'
             )
         );
     }
