@@ -24,7 +24,12 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->scalarNode('entities_namespace')
                     ->info('Namespace for bundle entities')
-                    ->defaultValue('App\\Entity\\AdaptiveManager')
+                    ->defaultValue('App\Entity\AdaptiveManager')
+                ->end()
+                ->arrayNode('entities')
+                    ->scalarPrototype()->end()  // Simple array of strings for entity class names
+                    ->info('List of fully qualified class names for entities')
+                    ->defaultValue([])
                 ->end()
             ->end();
 

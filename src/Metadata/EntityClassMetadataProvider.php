@@ -5,9 +5,9 @@ namespace Kabiroman\AdaptiveEntityManagerBundle\Metadata;
 use Kabiroman\AEM\ClassMetadata;
 use Kabiroman\AEM\Metadata\ClassMetadataProvider;
 
-class BundleClassMetadataProvider implements ClassMetadataProvider
+class EntityClassMetadataProvider implements ClassMetadataProvider
 {
-    private array $metadata = [];
+    private array $entities = [];
 
     public function __construct(array $config)
     {
@@ -16,16 +16,13 @@ class BundleClassMetadataProvider implements ClassMetadataProvider
 
     private function initializeMetadata(array $config): void
     {
-        foreach ($config['entities'] as $entityName => $entityConfig) {
-            $this->metadata[$entityConfig['class']] = new BundleClassMetadata(
-                $entityConfig['class'],
-                $entityConfig['fields']
-            );
+        foreach ($config as $entityName => $entityConfig) {
+            $this->entities[$entityName] = new EntityClassMetadata($entityName, $entityConfig);
         }
     }
 
     public function getClassMetadata(string $entityName): ?ClassMetadata
     {
-        return $this->metadata[$entityName] ?? null;
+        return $this->entities[$entityName] ?? null;
     }
 }

@@ -21,7 +21,7 @@ services:
         class: Kabiroman\AdaptiveEntityManagerBundle\Service\AdaptiveEntityManagerFactory
         arguments:
             $config: '@Kabiroman\AEM\Config'
-            $classMetadataProvider: '@Kabiroman\AEM\Metadata\DefaultEntityMetadataProvider'
+            $classMetadataProvider: '@EntityClassMetadataProvider'
             $entityDataAdapterProvider: '@Kabiroman\AEM\DataAdapter\DefaultEntityDataAdapterProvider'
             $transactionalConnection: '@?Kabiroman\AdaptiveEntityManagerBundle\Connection\DoctrineTransactionalConnection'
         public: true
@@ -57,3 +57,7 @@ services:
             $connection: '@doctrine.dbal.default_connection'  # Adjust if the constructor requires this or other arguments
         public: true
         shared: true
+
+    Kabiroman\AdaptiveEntityManagerBundle\Metadata\BundleClassMetadataProvider:
+        arguments:
+            $config: '%adaptive_entity_manager.entities%'  # Inject only the entities sub-array
