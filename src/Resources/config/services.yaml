@@ -20,10 +20,10 @@ services:
     adaptive_entity_manager.factory:
         class: Kabiroman\AdaptiveEntityManagerBundle\Service\AdaptiveEntityManagerFactory
         arguments:
-            $config: '@Kabiroman\AEM\Config'
-            $classMetadataProvider: '@Kabiroman\AdaptiveEntityManagerBundle\Metadata\EntityClassMetadataProvider'
-            $entityDataAdapterProvider: '@Kabiroman\AEM\DataAdapter\DefaultEntityDataAdapterProvider'
-            $transactionalConnection: '@?Kabiroman\AdaptiveEntityManagerBundle\Connection\DoctrineTransactionalConnection'
+            $config: '@adaptive_entity_manager.config'
+            $classMetadataProvider: '@adaptive_entity_manager.entity_metadata_provider'
+            $entityDataAdapterProvider: '@adaptive_entity_manager.adapter_registry'
+            $transactionalConnection: '@?adaptive_entity_manager.connection'
         public: true
         shared: true
 
@@ -31,8 +31,6 @@ services:
     adaptive_entity_manager.entity_manager:
         class: Kabiroman\AEM\AdaptiveEntityManager
         factory: ['@adaptive_entity_manager.factory', 'create']
-        arguments:
-            $adapterProvider: '@adaptive_entity_manager.adapter_registry'
         shared: true
         tags: ['doctrine.entity_manager']
 
@@ -46,18 +44,21 @@ services:
         alias: adaptive_entity_manager.adapter_registry
         public: true
 
-    Kabiroman\AEM\Config:
+    adaptive_entity_manager.config:
+        class: Kabiroman\AEM\Config
         arguments:
             $entityFolder: '%adaptive_entity_manager.entities_dir%'
             $entityNamespace: '%adaptive_entity_manager.entities_namespace%'
             $cacheFolder: '%kernel.cache_dir%'
 
-    Kabiroman\AdaptiveEntityManagerBundle\Connection\DoctrineTransactionalConnection:
-        arguments:
-            $connection: '@doctrine.dbal.default_connection'  # Adjust if the constructor requires this or other arguments
-        public: true
-        shared: true
+#    adaptive_entity_manager.connection:
+#        class: Kabiroman\AdaptiveEntityManagerBundle\Connection\DoctrineTransactionalConnection
+#        arguments:
+#            $connection: '@doctrine.dbal.default_connection'  # Adjust if the constructor requires this or other arguments
+#        public: true
+#        shared: true
 
-    Kabiroman\AdaptiveEntityManagerBundle\Metadata\EntityClassMetadataProvider:
+    adaptive_entity_manager.entity_metadata_provider:
+        class: Kabiroman\AdaptiveEntityManagerBundle\Metadata\EntityClassMetadataProvider
         arguments:
             $config: '%adaptive_entity_manager.entities%'  # Inject only the entities sub-array

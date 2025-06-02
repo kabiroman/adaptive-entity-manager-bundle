@@ -1,54 +1,5 @@
 adaptive_entity_manager:
-    config:
-        entity_folder: '%kernel.project_dir%/src/Entity'
-        entity_namespace: 'App\Entity\'
-        cache_folder: '%kernel.cache_dir%/adaptive-entity-manager'
-    entities:
-        # Пример конфигурации сущности
-        user:
-            class: App\Entity\User
-            fields:
-                id:
-                    type: integer
-                    id: true  # Помечаем поле как идентификатор
-                    options:
-                        nullable: false
-                name:
-                    type: string
-                    options:
-                        maxLength: 255
-                        nullable: false
-                email:
-                    type: string
-                    options:
-                        maxLength: 255
-                        nullable: false
-                age:
-                    type: integer
-                    options:
-                        nullable: true
-                
-        # Пример другой сущности
-        product:
-            class: App\Entity\Product
-            fields:
-                id:
-                    type: integer
-                    id: true
-                    options:
-                        nullable: false
-                title:
-                    type: string
-                    options:
-                        maxLength: 255
-                        nullable: false
-                price:
-                    type: decimal
-                    options:
-                        precision: 10
-                        scale: 2
-                        nullable: false
-                description:
-                    type: text
-                    options:
-                        nullable: true 
+    data_adapter_entity_manager: 'doctrine.orm.default_entity_manager'
+    entities_dir: '%kernel.project_dir%/src/Entity/AdaptiveManager'
+    entities_namespace: 'App\Entity\AdaptiveManager'
+    entities: []

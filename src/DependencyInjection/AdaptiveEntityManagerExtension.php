@@ -25,6 +25,7 @@ class AdaptiveEntityManagerExtension extends Extension
         $container->setParameter('adaptive_entity_manager.entities_dir', $config['entities_dir']);
         $container->setParameter('adaptive_entity_manager.entities_namespace', $config['entities_namespace']);
         $container->setParameter('adaptive_entity_manager.data_adapter_entity_manager', $config['data_adapter_entity_manager']);
+        $container->setParameter('adaptive_entity_manager.entities', $config['entities']);
 
         // Load services
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));

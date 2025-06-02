@@ -27,7 +27,7 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue('App\Entity\AdaptiveManager')
                 ->end()
                 ->arrayNode('entities')
-                    ->scalarPrototype()->end()  // Simple array of strings for entity class names
+                    ->scalarPrototype()->end()
                     ->info('List of fully qualified class names for entities')
                     ->defaultValue([])
                 ->end()
