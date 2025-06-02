@@ -63,6 +63,25 @@ App\Entity\User:
 ```
 For automated entity loading, place individual YAML files in `config/packages/adaptive_entities/`.
 
+## Registering the entity data adapter
+
+This section covers how to properly register and configure the data adapter for entities, including custom adapters, to integrate with your Doctrine setup via the EntityDataAdapterProvider.
+
+### Steps to Register Custom Adapters:
+1. Create a custom adapter class that implements the required interface (e.g., based on EntityDataAdapterProvider).
+2. Register your custom adapter as a service in Symfony's services.yaml or via autowiring, tagging it appropriately for the provider.
+3. In your configuration (e.g., config/packages/adaptive_entity_manager.yaml), reference the custom adapter in the EntityDataAdapterProvider setup.
+4. Test the custom adapter by injecting it into your code and verifying entity operations without altering database schemas.
+
+### Example Service Registration in services.yaml:
+```yaml
+services:
+    App\CustomAdapter:
+        class: App\CustomEntityDataAdapter
+        tags: ['adaptive_entity_manager.adapter']  # Assuming a tag for the provider
+        arguments: ['@doctrine']  # Inject dependencies as needed
+```
+
 ## Usage
 Use the service in your controllers or services:
 
