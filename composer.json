@@ -4,6 +4,9 @@
     "description": "Symfony bundle for kabiroman/adaptive-entity-manager integration",
     "keywords": ["symfony", "bundle", "entity", "manager"],
     "license": "MIT",
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "version": "1.0.0",
     "authors": [
         {
             "name": "Ruslan Kabirov",
@@ -34,8 +37,6 @@
     },
     "config": {
         "sort-packages": true
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    }
 }
  
