@@ -35,6 +35,7 @@ Adaptive entities allow dynamic definition of entity metadata via YAML files. Ea
 ```yaml
 # config/packages/adaptive_entities/user.yaml
 App\Entity\User:
+  dataAdapterClass: App\DataAdapter\UserDataAdapter
   id:
     id:
       column: id
@@ -67,9 +68,9 @@ For automated entity loading, place individual YAML files in `config/packages/ad
 This section covers how to properly register and configure the data adapter for entities, including custom adapters, to integrate with your Doctrine setup via the EntityDataAdapterProvider.
 
 ### Steps to Register Custom Adapters:
-1. Create a custom adapter class that implements the required interface (e.g., based on EntityDataAdapterProvider).
+1. Create a custom adapter class that implements the required interface (e.g., based on Kabiroman\AEM\DataAdapter\EntityDataAdapter).
 2. Register your custom adapter as a service in Symfony's services.yaml or via autowiring, tagging it appropriately for the provider.
-3. In your configuration (e.g., config/packages/adaptive_entity_manager.yaml), reference the custom adapter in the EntityDataAdapterProvider setup.
+3. In your configuration (e.g., config/packages/adaptive_entities/user.yaml), reference the custom adapter in the EntityDataAdapter setup.
 4. Test the custom adapter by injecting it into your code and verifying entity operations without altering database schemas.
 
 ### Example Service Registration in services.yaml:
@@ -85,11 +86,16 @@ services:
 Use the service in your controllers or services:
 
 ```php
-use Kabiroman\AdaptiveEntityManagerBundle\Service\AdaptiveEntityManagerFactory;
+use Kabiroman\AEM\EntityManagerInterface;
 
 // Get the entity manager
-$entityManager = $this->container->get('adaptive_entity_manager.entity_manager');
-// Perform operations as needed
+$entityManager = $this->container->get(EntityManagerInterface::class);
+$repository = $entityManager->getRepository(User::class);
+$user = $repository->find(1);
+
+$user = new User();
+$entityManager->persist($user);
+$entityManager->flush();
 ```
 
 ## Changelog
