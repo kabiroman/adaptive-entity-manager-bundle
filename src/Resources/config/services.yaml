@@ -11,11 +11,6 @@ services:
             - '../../Tests/'
             - '../../Entity/'
 
-    # Private service for Doctrine EntityManager
-#    adaptive_entity_manager.doctrine_manager:
-#        synthetic: true
-#        public: true
-
     # AdaptiveEntityManager factory
     adaptive_entity_manager.factory:
         class: Kabiroman\AdaptiveEntityManagerBundle\Service\AdaptiveEntityManagerFactory
@@ -32,7 +27,6 @@ services:
         class: Kabiroman\AEM\AdaptiveEntityManager
         factory: ['@adaptive_entity_manager.factory', 'create']
         shared: true
-        tags: ['doctrine.entity_manager']
 
     # Adapter registry service
     adaptive_entity_manager.adapter_registry:
@@ -50,13 +44,6 @@ services:
             $entityFolder: '%adaptive_entity_manager.entities_dir%'
             $entityNamespace: '%adaptive_entity_manager.entities_namespace%'
             $cacheFolder: '%kernel.cache_dir%'
-
-#    adaptive_entity_manager.connection:
-#        class: Kabiroman\AdaptiveEntityManagerBundle\Connection\DoctrineTransactionalConnection
-#        arguments:
-#            $connection: '@doctrine.dbal.default_connection'  # Adjust if the constructor requires this or other arguments
-#        public: true
-#        shared: true
 
     adaptive_entity_manager.entity_metadata_provider:
         class: Kabiroman\AdaptiveEntityManagerBundle\Metadata\EntityClassMetadataProvider
