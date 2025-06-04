@@ -1,0 +1,10 @@
+adaptive_entity_manager:
+    entity_managers:
+        default:
+            entities_dir: '%kernel.project_dir%/src/Entity/Adaptive'
+            entities_namespace: 'App\Entity\Adaptive\'
+            connection: default
+        custom:
+            entities_dir: '%kernel.project_dir%/src/Entity/Adaptive/Custom'
+            entities_namespace: 'App\Entity\Adaptive\Custom'
+            connection: custom
