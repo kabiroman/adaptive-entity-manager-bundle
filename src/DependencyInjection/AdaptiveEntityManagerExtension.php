@@ -2,6 +2,7 @@
 
 namespace Kabiroman\AdaptiveEntityManagerBundle\DependencyInjection;
 
+use Kabiroman\AdaptiveEntityManagerBundle\Connection\DoctrineTransactionalConnection;
 use Kabiroman\AdaptiveEntityManagerBundle\DataAdapter\AdapterRegistry;
 use Kabiroman\AdaptiveEntityManagerBundle\DependencyInjection\Compiler\ManagerRegistryPass;
 use Kabiroman\AdaptiveEntityManagerBundle\Metadata\EntityClassMetadataProvider;
@@ -12,6 +13,7 @@ use RuntimeException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
@@ -65,6 +67,10 @@ class AdaptiveEntityManagerExtension extends Extension
                     $container->getDefinition('adaptive_entity_manager.adapter_registry'),
                 ]);
             if ($connectionName !== null) {
+                $container->register('adaptive_entity_manager.'.$connectionName.'_connection', DoctrineTransactionalConnection::class)
+                    ->setArguments([
+                        new Reference('doctrine.dbal.'.$connectionName.'_connection'),
+                    ]);
                 $definition->addArgument($container->getDefinition('adaptive_entity_manager.'.$connectionName.'_connection'));
             }
             $definition->addTag(ManagerRegistryPass::MANAGER_TAG);
