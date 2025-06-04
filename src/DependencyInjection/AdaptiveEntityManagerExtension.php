@@ -2,6 +2,9 @@
 
 namespace Kabiroman\AdaptiveEntityManagerBundle\DependencyInjection;
 
+use Kabiroman\AdaptiveEntityManagerBundle\DependencyInjection\Compiler\ManagerRegistryPass;
+use Kabiroman\AEM\AdaptiveEntityManager;
+use Kabiroman\AEM\Config;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
@@ -30,17 +33,31 @@ class AdaptiveEntityManagerExtension extends Extension
             $config['entities'] = array_merge($config['entities'], $entities);
         }
 
-        // Validate and set parameters for ClassMetadataProvider and EntityManager
-        if (!isset($config['entities_dir'])) {
-            throw new \RuntimeException('Parameter "entities_dir" is required for ClassMetadataProvider configuration.');
+        if (!isset($config['entity_managers'])) {
+            throw new \RuntimeException('Parameter "entity_managers" is required for ClassMetadataProvider configuration.');
         }
-        if (!isset($config['entities_namespace'])) {
-            throw new \RuntimeException('Parameter "entities_namespace" is required for ClassMetadataProvider configuration.');
-        }
-
-        $container->setParameter('adaptive_entity_manager.entities_dir', $config['entities_dir']);
-        $container->setParameter('adaptive_entity_manager.entities_namespace', $config['entities_namespace']);
         $container->setParameter('adaptive_entity_manager.entities', $config['entities']);
+
+        foreach ($config['entity_managers'] as $name => $managerConfig) {
+            $configDefinition = $container->register("adaptive_entity_manager.$name".'_config', Config::class)
+                ->setArguments([
+                    $managerConfig['entities_dir'],
+                    $managerConfig['entities_namespace'],
+                    $container->getParameter('kernel.project_dir'),
+                ]);
+
+            $connectionName = $managerConfig['connection'] ?? null;
+            $definition = $container->register("adaptive_entity_manager.$name".'_entity_manager', AdaptiveEntityManager::class)
+                ->setArguments([
+                    $configDefinition,
+                    $container->getDefinition('adaptive_entity_manager.entity_metadata_provider'),
+                    $container->getDefinition('adaptive_entity_manager.adapter_registry'),
+                ]);
+            if ($connectionName !== null) {
+                $definition->addArgument($container->getDefinition('adaptive_entity_manager.'.$connectionName.'_connection'));
+            }
+            $definition->addTag(ManagerRegistryPass::MANAGER_TAG);
+        }
 
         // Load services
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));

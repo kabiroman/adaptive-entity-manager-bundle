@@ -11,22 +11,14 @@ services:
             - '../../Tests/'
             - '../../Entity/'
 
-    # AdaptiveEntityManager factory
-    adaptive_entity_manager.factory:
-        class: Kabiroman\AdaptiveEntityManagerBundle\Service\AdaptiveEntityManagerFactory
-        arguments:
-            $config: '@adaptive_entity_manager.config'
-            $classMetadataProvider: '@adaptive_entity_manager.entity_metadata_provider'
-            $entityDataAdapterProvider: '@adaptive_entity_manager.adapter_registry'
-            $transactionalConnection: '@?adaptive_entity_manager.connection'
+    adaptive_entity_manager.manager_registry:
+        class: Kabiroman\AdaptiveEntityManagerBundle\Service\ManagerRegistry
         public: true
-        shared: true
+        tags: ['adaptive_entity_manager.manager_registry']
 
-    # Main AdaptiveEntityManager service
-    Kabiroman\AEM\EntityManagerInterface:
-        class: Kabiroman\AEM\AdaptiveEntityManager
-        factory: ['@adaptive_entity_manager.factory', 'create']
-        shared: true
+    Kabiroman\AdaptiveEntityManagerBundle\Service\ManagerRegistryInterface:
+        alias: adaptive_entity_manager.manager_registry
+        public: true
 
     # Adapter registry service
     adaptive_entity_manager.adapter_registry:
@@ -37,13 +29,6 @@ services:
     Kabiroman\AEM\DataAdapter\EntityDataAdapterProvider:
         alias: adaptive_entity_manager.adapter_registry
         public: true
-
-    adaptive_entity_manager.config:
-        class: Kabiroman\AEM\Config
-        arguments:
-            $entityFolder: '%adaptive_entity_manager.entities_dir%'
-            $entityNamespace: '%adaptive_entity_manager.entities_namespace%'
-            $cacheFolder: '%kernel.cache_dir%'
 
     adaptive_entity_manager.entity_metadata_provider:
         class: Kabiroman\AdaptiveEntityManagerBundle\Metadata\EntityClassMetadataProvider
