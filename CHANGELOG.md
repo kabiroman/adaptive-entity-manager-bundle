@@ -6,6 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Changelog
 
+## [2.1.0] - 2025-06-04
+
+### 🚀 Added
+- **Symfony Event Dispatcher Integration**:
+    - `ManagerRegistry` now dispatches events using `Psr\EventDispatcher\EventDispatcherInterface`.
+    - Introduced `Kabiroman\AdaptiveEntityManagerBundle\Event\SymfonyEventDispatcherAdapter` to bridge PSR-14 and Symfony's Event Dispatcher.
+    - Added `Kabiroman\AdaptiveEntityManagerBundle\Event\ManagerRegisteredEvent` dispatched when an entity manager is registered.
+
+### ⬆️ Updated
+- Updated `composer.json` with new dependencies:
+    - `symfony/event-dispatcher` for Symfony event integration.
+    - `psr/event-dispatcher` for PSR-14 compatibility.
+    - `psr/log` for PSR-3 logger interface.
+    - `symfony/monolog-bundle` (dev dependency) for logger implementation.
+- Fixed dependency injection for `ManagerRegistry` in `AdaptiveEntityManagerExtension` to correctly provide `EventDispatcherInterface`.
+
 ## [2.0.0] - 2025-06-04
 
 ### 🚀 Added

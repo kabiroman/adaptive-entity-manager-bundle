@@ -140,6 +140,61 @@ class MyService
 }
 ```
 
+### Event Handling (Version 2.1.0 and above)
+
+With the introduction of PSR-14 event support, you can now react to various lifecycle events within the bundle. For example, to listen for when an `EntityManager` is registered:
+
+1.  **Create an Event Subscriber:**
+    ```php
+    // src/EventSubscriber/ManagerRegistrySubscriber.php
+    namespace App\EventSubscriber;
+
+    use Kabiroman\AdaptiveEntityManagerBundle\Event\ManagerRegisteredEvent;
+    use Psr\Log\LoggerInterface;
+    use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
+    class ManagerRegistrySubscriber implements EventSubscriberInterface
+    {
+        public function __construct(
+            private readonly LoggerInterface $logger
+        ) {
+        }
+
+        public static function getSubscribedEvents(): array
+        {
+            return [
+                ManagerRegisteredEvent::class => 'onManagerRegistered',
+            ];
+        }
+
+        public function onManagerRegistered(ManagerRegisteredEvent $event): void
+        {
+            $this->logger->info(sprintf(
+                '[ManagerRegistrySubscriber] Manager \"%s\" of type \"%s\" has been registered.',
+                $event->getManagerName(),
+                get_class($event->getManager())
+            ));
+        }
+    }
+    ```
+
+2.  **Register the Subscriber (usually done automatically by Symfony's autoconfigure):**
+    Ensure your `services.yaml` (or equivalent) allows for autoconfiguration/autowiring of subscribers, which is typical for Symfony projects:
+    ```yaml
+    # config/services.yaml
+    services:
+        _defaults:
+            autowire: true
+            autoconfigure: true
+
+        # ... your bundle services
+
+        App\EventSubscriber\:
+            resource: '../src/EventSubscriber'
+    ```
+
+This setup allows you to execute custom logic whenever a manager is registered within the `ManagerRegistry`.
+
 ### Breaking Changes in 2.0.0
 *   **Default `EntityManager` removed:** You must now explicitly specify a manager name when retrieving an `EntityManager`. Direct access to a default `EntityManager` service (e.g., `Kabiroman\AEM\EntityManagerInterface::class`) is no longer supported directly without using the `ManagerRegistry`.
 
