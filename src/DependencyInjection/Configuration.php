@@ -34,12 +34,12 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('entities_namespace')
                                 ->info('Namespace for entities in this manager')
                             ->end()
+                            ->scalarNode('connection')
+                                ->info('Database connection name or configuration')
+                                ->defaultValue('default')
+                            ->end()
                         ->end()
                     ->end()
-                ->end()
-                ->scalarNode('connection')
-                    ->info('Database connection name or configuration')
-                    ->defaultValue('default')
                 ->end()
             ->end();
 
