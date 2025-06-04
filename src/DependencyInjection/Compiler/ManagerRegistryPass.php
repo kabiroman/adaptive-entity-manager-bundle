@@ -20,7 +20,7 @@ class ManagerRegistryPass implements CompilerPassInterface
         $taggedServices = $container->findTaggedServiceIds(self::MANAGER_TAG);
 
         foreach ($taggedServices as $id => $tags) {
-            $definition->addMethodCall('addManager', [new Reference($id)]);
+            $definition->addMethodCall('addManager', [$id, new Reference($id)]);
         }
     }
 }
