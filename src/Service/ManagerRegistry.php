@@ -4,6 +4,8 @@ namespace Kabiroman\AdaptiveEntityManagerBundle\Service;
 
 use InvalidArgumentException;
 use Kabiroman\AEM\EntityManagerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Kabiroman\AdaptiveEntityManagerBundle\Event\ManagerRegisteredEvent;
 
 class ManagerRegistry implements ManagerRegistryInterface
 {
@@ -12,9 +14,16 @@ class ManagerRegistry implements ManagerRegistryInterface
      */
     private array $managers = [];
 
+    public function __construct(
+        private readonly EventDispatcherInterface $eventDispatcher
+    ) {
+    }
+
     public function addManager(string $name, EntityManagerInterface $manager): void
     {
         $this->managers[$name] = $manager;
+
+        $this->eventDispatcher->dispatch(new ManagerRegisteredEvent($name, $manager));
     }
 
     public function getManager(string $name): ?EntityManagerInterface
