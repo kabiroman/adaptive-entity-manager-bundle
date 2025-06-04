@@ -2,9 +2,13 @@
 
 namespace Kabiroman\AdaptiveEntityManagerBundle\DependencyInjection;
 
+use Kabiroman\AdaptiveEntityManagerBundle\DataAdapter\AdapterRegistry;
 use Kabiroman\AdaptiveEntityManagerBundle\DependencyInjection\Compiler\ManagerRegistryPass;
+use Kabiroman\AdaptiveEntityManagerBundle\Metadata\EntityClassMetadataProvider;
+use Kabiroman\AdaptiveEntityManagerBundle\Service\ManagerRegistry;
 use Kabiroman\AEM\AdaptiveEntityManager;
 use Kabiroman\AEM\Config;
+use RuntimeException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
@@ -34,9 +38,15 @@ class AdaptiveEntityManagerExtension extends Extension
         }
 
         if (!isset($config['entity_managers'])) {
-            throw new \RuntimeException('Parameter "entity_managers" is required for ClassMetadataProvider configuration.');
+            throw new RuntimeException('Parameter "entity_managers" is required for ClassMetadataProvider configuration.');
         }
         $container->setParameter('adaptive_entity_manager.entities', $config['entities']);
+        $container->register('adaptive_entity_manager.entity_metadata_provider', EntityClassMetadataProvider::class)
+            ->setArguments([
+                $config['entities'],
+            ]);
+        $container->register('adaptive_entity_manager.adapter_registry', AdapterRegistry::class);
+        $container->register('adaptive_entity_manager.manager_registry', ManagerRegistry::class);
 
         foreach ($config['entity_managers'] as $name => $managerConfig) {
             $configDefinition = $container->register("adaptive_entity_manager.$name".'_config', Config::class)

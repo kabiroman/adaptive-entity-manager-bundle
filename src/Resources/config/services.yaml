@@ -11,26 +11,6 @@ services:
             - '../../Tests/'
             - '../../Entity/'
 
-    adaptive_entity_manager.manager_registry:
-        class: Kabiroman\AdaptiveEntityManagerBundle\Service\ManagerRegistry
-        public: true
-        tags: ['adaptive_entity_manager.manager_registry']
-
     Kabiroman\AdaptiveEntityManagerBundle\Service\ManagerRegistryInterface:
         alias: adaptive_entity_manager.manager_registry
         public: true
-
-    # Adapter registry service
-    adaptive_entity_manager.adapter_registry:
-        class: Kabiroman\AdaptiveEntityManagerBundle\DataAdapter\AdapterRegistry
-        public: true
-
-    # Interface alias for adapter provider
-    Kabiroman\AEM\DataAdapter\EntityDataAdapterProvider:
-        alias: adaptive_entity_manager.adapter_registry
-        public: true
-
-    adaptive_entity_manager.entity_metadata_provider:
-        class: Kabiroman\AdaptiveEntityManagerBundle\Metadata\EntityClassMetadataProvider
-        arguments:
-            $config: '%adaptive_entity_manager.entities%'
