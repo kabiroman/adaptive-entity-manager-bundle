@@ -4,6 +4,60 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# Changelog
+
+## [2.0.0] - 2025-06-04
+
+### 🚀 Added
+- **Multiple EntityManagers Support**:
+    - New `ManagerRegistry` service for managing multiple managers.
+    - Configuration via `entity_managers` section in YAML.
+    - `ManagerRegistry::getManager(string $name)` method to access managers by name.
+- **Additional Options**:
+    - Custom `naming_strategy` and `filters` per manager.
+    - Automatic service registration via Symfony DI (tags).
+
+### ⚠️ Breaking Changes
+- Default `EntityManager` removed — now you must specify a manager name.
+
+### 🔄 Changed
+- Configuration:
+  ```yaml
+  # Before:
+  adaptive_entity_manager:
+    entities_dir: '%kernel.project_dir%/src/Entity/Adaptive'
+    entities_namespace: 'App\Entity\Adaptive\'
+    connection: default
+
+  # After:
+  adaptive_entity_manager:
+    entity_managers:
+      default:
+        entities_dir: '%kernel.project_dir%/src/Entity/Adaptive'
+        entities_namespace: 'App\Entity\Adaptive\'
+        connection: default
+      custom:
+        entities_dir: '%kernel.project_dir%/src/Entity/Adaptive/Custom'
+        entities_namespace: 'App\Entity\Adaptive\Custom'
+        connection: custom
+  ```
+
+### 🛠️ Migration Guide
+1. **Update config** (see above).
+2. **Replace calls**:
+   ```php
+   // Before:
+   use Kabiroman\AEM\EntityManagerInterface;
+
+   $manager = $container->get(EntityManagerInterface::class);
+
+   // After:
+   use Kabiroman\AdaptiveEntityManagerBundle\Service\ManagerRegistryInterface;
+
+   $defaultManager = $container->get(ManagerRegistryInterface::class)->getManager('adaptive_entity_manager.default_entity_manager');
+   $customManager = $container->get(ManagerRegistryInterface::class)->getManager('adaptive_entity_manager.custom_entity_manager');
+   ```
+
 ## [1.0.1] - 2025-06-04
 
 ### Removed
