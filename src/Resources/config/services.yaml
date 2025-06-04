@@ -14,3 +14,13 @@ services:
     Kabiroman\AdaptiveEntityManagerBundle\Service\ManagerRegistryInterface:
         alias: adaptive_entity_manager.manager_registry
         public: true
+
+    adaptive_entity_manager.event_dispatcher_adapter:
+        class: Kabiroman\AdaptiveEntityManagerBundle\Event\SymfonyEventDispatcherAdapter
+        arguments:
+            - '@event_dispatcher'
+        public: true
+
+    Psr\EventDispatcher\EventDispatcherInterface:
+        alias: adaptive_entity_manager.event_dispatcher_adapter
+        public: true
