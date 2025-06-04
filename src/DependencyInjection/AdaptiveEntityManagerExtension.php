@@ -53,7 +53,7 @@ class AdaptiveEntityManagerExtension extends Extension
                 ->setArguments([
                     $managerConfig['entities_dir'],
                     $managerConfig['entities_namespace'],
-                    $container->getParameter('kernel.project_dir'),
+                    $container->getParameter('kernel.cache_dir'),
                 ]);
 
             $connectionName = $managerConfig['connection'] ?? null;
