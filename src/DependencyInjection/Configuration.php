@@ -37,6 +37,10 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+                ->scalarNode('connection')
+                    ->info('Database connection name or configuration')
+                    ->defaultValue('default')
+                ->end()
             ->end();
 
         return $treeBuilder;
