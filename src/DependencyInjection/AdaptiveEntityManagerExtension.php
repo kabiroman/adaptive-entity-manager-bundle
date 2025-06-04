@@ -36,7 +36,7 @@ class AdaptiveEntityManagerExtension extends Extension
         foreach ($config['entity_managers'] as $name => $managerConfig) {
             $config['entities'][$name] = [];
             // Automatic loading of objects from YAML files
-            $entitiesDir = $container->getParameter('kernel.project_dir') . '/config/packages/adaptive_entities/';
+            $entitiesDir = $container->getParameter('kernel.project_dir') . '/config/aem/entities/';
             if (is_dir($entitiesDir)) {
                 $finder = new Finder();
                 $finder->files()->in($entitiesDir)->name($name.'.*.yaml');
