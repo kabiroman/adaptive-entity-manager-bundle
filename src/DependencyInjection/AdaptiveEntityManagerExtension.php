@@ -30,7 +30,10 @@ class AdaptiveEntityManagerExtension extends Extension
             throw new RuntimeException('Parameter "entity_managers" is required for configuration.');
         }
 
-        $container->register('adaptive_entity_manager.manager_registry', ManagerRegistry::class);
+        $container->register('adaptive_entity_manager.manager_registry', ManagerRegistry::class)
+            ->setArguments([
+                new Reference('Psr\\EventDispatcher\\EventDispatcherInterface'),
+            ]);
         $container->register('adaptive_entity_manager.adapter_registry', AdapterRegistry::class);
 
         foreach ($config['entity_managers'] as $name => $managerConfig) {
