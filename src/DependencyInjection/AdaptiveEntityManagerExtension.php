@@ -37,6 +37,10 @@ class AdaptiveEntityManagerExtension extends Extension
         $container->register('adaptive_entity_manager.adapter_registry', AdapterRegistry::class);
 
         foreach ($config['entity_managers'] as $name => $managerConfig) {
+            $entitiesDir = $managerConfig['entities_dir'];
+            if (!is_dir($entitiesDir)) {
+                throw new RuntimeException(sprintf('The configured entities_dir "%s" for entity manager "%s" does not exist or is not a directory.', $entitiesDir, $name));
+            }
             $config['entities'][$name] = [];
             // Automatic loading of objects from YAML files
             $entitiesDir = $container->getParameter('kernel.project_dir') . '/config/aem/entities/';

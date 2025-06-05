@@ -6,7 +6,7 @@
     "license": "MIT",
     "minimum-stability": "stable",
     "prefer-stable": true,
-    "version": "2.2.2",
+    "version": "2.2.3",
     "authors": [
         {
             "name": "Ruslan Kabirov",
