@@ -68,6 +68,7 @@ class AdaptiveEntityManagerExtension extends Extension
                     $configDefinition,
                     $container->getDefinition('adaptive_entity_manager.'.$name.'_metadata_provider'),
                     $container->getDefinition('adaptive_entity_manager.adapter_registry'),
+                    '$eventDispatcher' => new Reference('Psr\\EventDispatcher\\EventDispatcherInterface'),
                 ]);
             if ($connectionName !== null) {
                 $container->register('adaptive_entity_manager.'.$connectionName.'_connection', DoctrineTransactionalConnection::class)

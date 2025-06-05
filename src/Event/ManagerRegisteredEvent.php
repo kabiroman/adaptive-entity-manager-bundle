@@ -3,10 +3,11 @@
 namespace Kabiroman\AdaptiveEntityManagerBundle\Event;
 
 use Kabiroman\AEM\EntityManagerInterface;
+use Symfony\Contracts\EventDispatcher\Event;
 
-class ManagerRegisteredEvent
+class ManagerRegisteredEvent extends Event
 {
-    public const NAME = 'adaptive_entity_manager.manager_registered';
+    public const NAME = 'aem.manager_registered';
 
     public function __construct(
         private readonly string $managerName,

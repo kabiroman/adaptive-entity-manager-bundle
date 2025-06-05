@@ -6,6 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Changelog
 
+## [2.2.0] - 2025-06-04
+
+### 🚀 Added
+- **UnitOfWork Events Integration**:
+    - Created Symfony wrapper events (`PrePersistEntityEvent`, `PostPersistEntityEvent`, `PreUpdateEntityEvent`, `PostUpdateEntityEvent`, `PreRemoveEntityEvent`, `PostRemoveEntityEvent`) to wrap original `UnitOfWork` events.
+    - Implemented `Kabiroman\AdaptiveEntityManagerBundle\EventSubscriber\UnitOfWorkEventSubscriber` to listen to `UnitOfWork` events and dispatch the new Symfony wrapper events.
+
+### 🔄 Changed
+- **Event System Refinement**:
+    - `Kabiroman\AdaptiveEntityManagerBundle\Event\ManagerRegisteredEvent` now directly extends `Symfony\Contracts\EventDispatcher\Event`, making it a native Symfony event.
+
+### 🗑️ Removed
+- Removed `Psr\Log\LoggerInterface` dependency and all logging calls from `Kabiroman\AdaptiveEntityManagerBundle\EventSubscriber\UnitOfWorkEventSubscriber`.
+- Removed `Kabiroman\AdaptiveEntityManagerBundle\EventSubscriber\ManagerRegistrySubscriber` as its logging functionality was deemed redundant.
+- Removed `Kabiroman\AdaptiveEntityManagerBundle\Event\ManagerRegisteredSymfonyEvent` as `ManagerRegisteredEvent` became a native Symfony event.
+
 ## [2.1.0] - 2025-06-04
 
 ### 🚀 Added

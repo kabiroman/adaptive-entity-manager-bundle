@@ -24,3 +24,7 @@ services:
     Psr\EventDispatcher\EventDispatcherInterface:
         alias: adaptive_entity_manager.event_dispatcher_adapter
         public: true
+
+    Kabiroman\AdaptiveEntityManagerBundle\EventSubscriber\UnitOfWorkEventSubscriber:
+        tags:
+            - { name: kernel.event_subscriber }
