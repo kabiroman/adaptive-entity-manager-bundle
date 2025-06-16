@@ -4,8 +4,10 @@ namespace Kabiroman\AdaptiveEntityManagerBundle\Tests\Service;
 
 use Kabiroman\AdaptiveEntityManagerBundle\Service\ManagerRegistry;
 use Kabiroman\AEM\EntityManagerInterface;
+use Kabiroman\AEM\ClassMetadata;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class ManagerRegistryTest extends TestCase
 {
@@ -13,7 +15,8 @@ class ManagerRegistryTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->managerRegistry = new ManagerRegistry();
+        $mockEventDispatcher = $this->createMock(EventDispatcherInterface::class);
+        $this->managerRegistry = new ManagerRegistry($mockEventDispatcher);
     }
 
     public function testAddAndGetManager(): void
@@ -60,10 +63,11 @@ class ManagerRegistryTest extends TestCase
         $mockEntityManager1->method('getClassMetadata')
             ->willThrowException(new InvalidArgumentException('Entity not found in manager1'));
 
+        $mockClassMetadata = $this->createMock(ClassMetadata::class);
         $mockEntityManager2 = $this->createMock(EntityManagerInterface::class);
         $mockEntityManager2->method('getClassMetadata')
             ->with($entityClass)
-            ->willReturn([]); // Return something not null to indicate found
+            ->willReturn($mockClassMetadata); // Return ClassMetadata mock to indicate found
 
         $this->managerRegistry->addManager($manager1Name, $mockEntityManager1);
         $this->managerRegistry->addManager($manager2Name, $mockEntityManager2);
