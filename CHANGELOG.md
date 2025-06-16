@@ -5,6 +5,29 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 # Changelog
+## [2.3.0] - 2025-06-17
+
+### 🚀 Added
+- **PSR-6 Metadata Caching Support**: Added configuration option `metadata_cache` to specify PSR-6 cache service for metadata caching
+- **Optimized Metadata System**: Added `use_optimized_metadata` boolean option to enable/disable optimized metadata system for better performance
+- **Adaptive Entity Manager v1.2.x Support**: Updated bundle to fully support new features from adaptive-entity-manager v1.2.x
+
+### ⬆️ Updated  
+- **Dependencies**: Updated requirement for `kabiroman/adaptive-entity-manager` from `^1.1` to `^1.2`
+- **Constructor Arguments**: Updated AdaptiveEntityManager service definition to use new v1.2.x constructor signature with optional PSR-6 caching and optimization flags
+
+### 📋 Configuration Examples
+```yaml
+adaptive_entity_manager:
+    entity_managers:
+        default:
+            entities_dir: '%kernel.project_dir%/src/Entity'
+            entities_namespace: 'App\Entity'
+            connection: 'default'
+            metadata_cache: 'cache.app'  # PSR-6 cache service ID
+            use_optimized_metadata: true # Enable optimized metadata (default: true)
+```
+
 ## [2.2.3] - 2025-06-05
 
 ### 🚀 Added

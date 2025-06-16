@@ -67,20 +67,42 @@ class AdaptiveEntityManagerExtension extends Extension
                 ]);
 
             $connectionName = $managerConfig['connection'] ?? null;
-            $definition = $container->register("adaptive_entity_manager.$name".'_entity_manager', AdaptiveEntityManager::class)
-                ->setArguments([
-                    $configDefinition,
-                    $container->getDefinition('adaptive_entity_manager.'.$name.'_metadata_provider'),
-                    $container->getDefinition('adaptive_entity_manager.adapter_registry'),
-                    '$eventDispatcher' => new Reference('Psr\\EventDispatcher\\EventDispatcherInterface'),
-                ]);
+            $metadataCacheService = $managerConfig['metadata_cache'] ?? null;
+            $useOptimizedMetadata = $managerConfig['use_optimized_metadata'] ?? true;
+            
+            $arguments = [
+                $configDefinition,
+                $container->getDefinition('adaptive_entity_manager.'.$name.'_metadata_provider'),
+                $container->getDefinition('adaptive_entity_manager.adapter_registry'),
+            ];
+            
+            // Add optional transactional connection
             if ($connectionName !== null) {
                 $container->register('adaptive_entity_manager.'.$connectionName.'_connection', DoctrineTransactionalConnection::class)
                     ->setArguments([
                         new Reference('doctrine.dbal.'.$connectionName.'_connection'),
                     ]);
-                $definition->addArgument($container->getDefinition('adaptive_entity_manager.'.$connectionName.'_connection'));
+                $arguments[] = $container->getDefinition('adaptive_entity_manager.'.$connectionName.'_connection');
+            } else {
+                $arguments[] = null; // transactionalConnection
             }
+            
+            $arguments[] = null; // metadataFactory (auto-created)
+            $arguments[] = null; // repositoryFactory (auto-created)  
+            $arguments[] = null; // persisterFactory (auto-created)
+            
+            // Add PSR-6 metadata cache if configured
+            if ($metadataCacheService !== null) {
+                $arguments[] = new Reference($metadataCacheService);
+            } else {
+                $arguments[] = null; // metadataCache
+            }
+            
+            $arguments[] = $useOptimizedMetadata; // useOptimizedMetadata
+            $arguments[] = new Reference('Psr\\EventDispatcher\\EventDispatcherInterface'); // eventDispatcher
+            
+            $definition = $container->register("adaptive_entity_manager.$name".'_entity_manager', AdaptiveEntityManager::class)
+                ->setArguments($arguments);
             $definition->addTag(ManagerRegistryPass::MANAGER_TAG);
         }
 
