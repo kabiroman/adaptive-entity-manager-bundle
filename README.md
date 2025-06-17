@@ -31,14 +31,35 @@ adaptive_entity_manager:
             entities_dir: '%kernel.project_dir%/src/Entity/Adaptive'
             entities_namespace: 'App\Entity\Adaptive\'
             connection: default # Assuming 'default' is configured in doctrine.yaml
+            metadata_cache: 'cache.app'  # Optional: PSR-6 cache service ID for metadata caching
+            use_optimized_metadata: true # Optional: Enable optimized metadata system (default: true)
         custom:
             entities_dir: '%kernel.project_dir%/src/Entity/Adaptive/Custom'
             entities_namespace: 'App\Entity\Adaptive\Custom\'
             connection: custom # Assuming 'custom' is configured in doctrine.yaml
+            metadata_cache: 'cache.custom' # Optional: Different cache service for this manager
+            use_optimized_metadata: false # Optional: Disable optimization for this manager
 ```
 
 ### Important Note on Entity Metadata Paths (Version 2.0.0+)
 In versions prior to 2.0.0, the `entities_dir` was a top-level configuration. With the introduction of multiple entity managers in 2.0.0, the `entities_dir` (and `entities_namespace`) are now configured *per entity manager* within the `entity_managers` section. This allows each manager to define its own specific directory for YAML entity metadata files and their corresponding namespace.
+
+### Performance Configuration Options (Version 2.3.0+)
+Starting from version 2.3.0, the bundle supports additional performance optimization options:
+
+#### `metadata_cache` (optional)
+- **Type**: string (PSR-6 cache service ID)
+- **Default**: null (no caching)
+- **Description**: Specifies a PSR-6 cache service to use for caching entity metadata. This significantly improves performance by avoiding re-parsing of YAML entity definitions on every request.
+- **Example values**: `'cache.app'`, `'cache.redis'`, `'cache.custom'`
+
+#### `use_optimized_metadata` (optional)
+- **Type**: boolean
+- **Default**: true
+- **Description**: Enables the optimized metadata system which provides better performance for metadata operations. When enabled, uses `OptimizedEntityMetadataFactory` instead of the standard `EntityMetadataFactory`.
+- **Recommendation**: Keep enabled (true) for production environments unless you have specific compatibility requirements.
+
+**Performance Impact**: Using both `metadata_cache` and `use_optimized_metadata: true` can significantly reduce application startup time and improve overall performance, especially in applications with many entity definitions.
 
 ### Entity Metadata Paths and Automatic Discovery
 
@@ -171,7 +192,7 @@ To subscribe to these events, you can create a Symfony event subscriber. The eve
       connection: default
     ```
 
-    **After (2.0.0):**
+    **After (2.0.0+):**
     ```yaml
     adaptive_entity_manager:
       entity_managers:
@@ -179,6 +200,9 @@ To subscribe to these events, you can create a Symfony event subscriber. The eve
           entities_dir: '%kernel.project_dir%/src/Entity/Adaptive'
           entities_namespace: 'App\Entity\Adaptive\'
           connection: default
+          # Performance options (available since 2.3.0):
+          metadata_cache: 'cache.app'        # Optional: PSR-6 cache for metadata
+          use_optimized_metadata: true       # Optional: Enable optimizations
     ```
 
 2.  **Replace `EntityManagerInterface` calls:**

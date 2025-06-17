@@ -5,6 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 # Changelog
+## [2.3.1] - 2025-06-17
+
+### 📝 Fixed
+- **Documentation Update**: Added comprehensive documentation for `metadata_cache` and `use_optimized_metadata` configuration options in README.md
+- **Performance Options Documentation**: Added detailed description of PSR-6 cache integration and optimized metadata system configuration
+- **Configuration Examples**: Updated configuration examples to include new performance optimization parameters
+
 ## [2.3.0] - 2025-06-17
 
 ### 🚀 Added
