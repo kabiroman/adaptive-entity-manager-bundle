@@ -1,7 +1,7 @@
 # Adaptive Entity Manager Bundle
 
 ## Introduction
-This bundle provides flexible entity management for Symfony applications, integrating with Doctrine ORM to handle entities dynamically from YAML configurations. In version 2.0.0, it introduces enhanced support for **multiple EntityManagers**, allowing for more complex and adaptable database interactions. It enables automated loading of entity definitions and supports various EntityManagers for improved flexibility.
+This bundle provides flexible entity management for Symfony applications, integrating with Doctrine ORM to handle entities dynamically from YAML configurations. In version 2.0.0, it introduces enhanced support for **multiple EntityManagers**, allowing for more complex and adaptable database interactions. Version 2.4.0 adds comprehensive **ValueObject support** for domain-driven design with immutable value objects. It enables automated loading of entity definitions and supports various EntityManagers for improved flexibility.
 
 ## Installation
 To install the bundle, use Composer:
@@ -39,6 +39,7 @@ adaptive_entity_manager:
             connection: custom # Assuming 'custom' is configured in doctrine.yaml
             metadata_cache: 'cache.custom' # Optional: Different cache service for this manager
             use_optimized_metadata: false # Optional: Disable optimization for this manager
+            enable_value_objects: true # Enable ValueObject support (default: true)
 ```
 
 ### Important Note on Entity Metadata Paths (Version 2.0.0+)
@@ -70,6 +71,140 @@ The bundle includes an **automatic discovery** mechanism that searches for entit
     *   Entities found via this automatic discovery are merged with entities configured via the `entities_dir` for that specific manager.
 
 
+## ValueObject Support (Version 2.4.0 and above)
+
+The bundle now provides full support for **ValueObjects** - immutable objects that encapsulate primitive values with domain-specific behavior and validation. This feature is powered by `kabiroman/adaptive-entity-manager` v1.3.0 and above.
+
+### Built-in ValueObjects
+
+The bundle includes support for common ValueObjects:
+
+- **Email**: Email validation with domain/local part extraction
+- **Money**: Currency-aware monetary values with arithmetic operations
+- **UserId**: Type-safe user identifiers with validation
+
+### Configuration
+
+ValueObject support is **enabled by default** for all entity managers. You can disable it per manager if needed:
+
+```yaml
+adaptive_entity_manager:
+    entity_managers:
+        default:
+            entities_dir: '%kernel.project_dir%/src/Entity/Adaptive'
+            entities_namespace: 'App\Entity\Adaptive\'
+            connection: default
+            enable_value_objects: true  # Default: true
+        legacy:
+            entities_dir: '%kernel.project_dir%/src/Entity/Legacy'
+            entities_namespace: 'App\Entity\Legacy\'
+            connection: legacy
+            enable_value_objects: false # Disable ValueObjects for legacy entities
+```
+
+### Usage Example
+
+```php
+use Kabiroman\AEM\ValueObject\Common\Email;
+use App\Entity\User;
+
+// In your entity
+class User
+{
+    private ?Email $email = null;
+    
+    public function setEmail(?Email $email): self
+    {
+        $this->email = $email;
+        return $this;
+    }
+    
+    public function setEmailFromString(string $email): self
+    {
+        $this->email = new Email($email);
+        return $this;
+    }
+    
+    public function getEmail(): ?Email
+    {
+        return $this->email;
+    }
+    
+    public function getEmailAsString(): ?string
+    {
+        return $this->email?->__toString();
+    }
+}
+
+// In your metadata YAML
+App\Entity\User:
+  fields:
+    email:
+      column: email
+      type: value_object
+      valueObjectClass: Kabiroman\AEM\ValueObject\Common\Email
+```
+
+### Automatic Conversion
+
+ValueObjects are automatically converted:
+- **During persistence**: ValueObject → primitive value for database storage
+- **During hydration**: primitive value → ValueObject for entity properties
+
+```php
+// Create user with Email ValueObject
+$user = new User();
+$user->setEmailFromString('user@example.com'); // Creates Email ValueObject
+
+$entityManager->persist($user);  // Email converts to string for DB
+$entityManager->flush();
+
+// Load user - email is automatically converted back to Email ValueObject
+$loadedUser = $entityManager->find(User::class, 1);
+$email = $loadedUser->getEmail(); // Returns Email ValueObject
+echo $email->getDomain(); // "example.com"
+```
+
+### Custom ValueObjects
+
+You can create custom ValueObjects by implementing `ValueObjectInterface`:
+
+```php
+use Kabiroman\AEM\ValueObject\ValueObjectInterface;
+
+class ProductCode implements ValueObjectInterface
+{
+    public function __construct(private readonly string $code)
+    {
+        if (!preg_match('/^[A-Z]{2}\d{4}$/', $code)) {
+            throw new \InvalidArgumentException('Invalid product code format');
+        }
+    }
+
+    public function toPrimitive(): string
+    {
+        return $this->code;
+    }
+
+    public static function fromPrimitive($value): self
+    {
+        return new self((string) $value);
+    }
+
+    public function equals(ValueObjectInterface $other): bool
+    {
+        return $other instanceof self && $this->code === $other->code;
+    }
+
+    public function __toString(): string
+    {
+        return $this->code;
+    }
+}
+```
+
+For complete ValueObject documentation, see the [main package documentation](https://github.com/kabiroman/adaptive-entity-manager/blob/main/docs/VALUE_OBJECTS.md).
+
 ### Configuring Adaptive Entity Metadata
 Adaptive entities allow dynamic definition of entity metadata via YAML files. Each YAML file in the `entities_dir` for a specific manager should define the structure of an entity, including fields, types, and other metadata.
 
@@ -88,6 +223,11 @@ App\Entity\User:
       column: login
       type: string
       nullable: false
+    email:
+      column: email
+      type: value_object
+      valueObjectClass: Kabiroman\AEM\ValueObject\Common\Email
+      nullable: true
   hasOne:
     role:
       targetEntity: App\Entity\User\Role
@@ -203,6 +343,8 @@ To subscribe to these events, you can create a Symfony event subscriber. The eve
           # Performance options (available since 2.3.0):
           metadata_cache: 'cache.app'        # Optional: PSR-6 cache for metadata
           use_optimized_metadata: true       # Optional: Enable optimizations
+          # New in 2.4.0: ValueObject support (enabled by default)
+          enable_value_objects: true
     ```
 
 2.  **Replace `EntityManagerInterface` calls:**

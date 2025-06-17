@@ -9,6 +9,7 @@ use Kabiroman\AdaptiveEntityManagerBundle\Metadata\EntityClassMetadataProvider;
 use Kabiroman\AdaptiveEntityManagerBundle\Service\ManagerRegistry;
 use Kabiroman\AEM\AdaptiveEntityManager;
 use Kabiroman\AEM\Config;
+use Kabiroman\AEM\ValueObject\Converter\ValueObjectConverterRegistry;
 use RuntimeException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -35,6 +36,8 @@ class AdaptiveEntityManagerExtension extends Extension
                 new Reference('Psr\\EventDispatcher\\EventDispatcherInterface'),
             ]);
         $container->register('adaptive_entity_manager.adapter_registry', AdapterRegistry::class);
+        $container->register('adaptive_entity_manager.value_object_registry', ValueObjectConverterRegistry::class)
+            ->setPublic(true);
 
         foreach ($config['entity_managers'] as $name => $managerConfig) {
             $entitiesDir = $managerConfig['entities_dir'];
@@ -69,6 +72,7 @@ class AdaptiveEntityManagerExtension extends Extension
             $connectionName = $managerConfig['connection'] ?? null;
             $metadataCacheService = $managerConfig['metadata_cache'] ?? null;
             $useOptimizedMetadata = $managerConfig['use_optimized_metadata'] ?? true;
+            $enableValueObjects = $managerConfig['enable_value_objects'] ?? true;
             
             $arguments = [
                 $configDefinition,
@@ -101,8 +105,16 @@ class AdaptiveEntityManagerExtension extends Extension
             $arguments[] = $useOptimizedMetadata; // useOptimizedMetadata
             $arguments[] = new Reference('Psr\\EventDispatcher\\EventDispatcherInterface'); // eventDispatcher
             
+            // Add ValueObject registry if enabled
+            if ($enableValueObjects) {
+                $arguments[] = new Reference('adaptive_entity_manager.value_object_registry');
+            } else {
+                $arguments[] = null; // valueObjectRegistry
+            }
+            
             $definition = $container->register("adaptive_entity_manager.$name".'_entity_manager', AdaptiveEntityManager::class)
-                ->setArguments($arguments);
+                ->setArguments($arguments)
+                ->setPublic(true);
             $definition->addTag(ManagerRegistryPass::MANAGER_TAG);
         }
 
