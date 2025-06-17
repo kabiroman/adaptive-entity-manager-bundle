@@ -4,7 +4,99 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-# Changelog
+## [2.4.1] - 2025-06-18
+
+### Updated
+- **Core Dependency**: Updated `kabiroman/adaptive-entity-manager` to `^1.3.1`
+- **Enhanced DateTime Support**: Includes improved DateTime handling from core package
+- **Better Type Safety**: Enhanced identifier and type handling improvements
+
+### Improvements
+- **DateTime Immutable**: Full support for `datetime_immutable` field types
+- **Flexible Identifiers**: Better identifier resolution in data adapters
+- **Type Conversion**: Automatic string-to-DateTime conversion
+- **Backward Compatibility**: 100% maintained with existing code
+
+## [2.4.0] - 2024-06-18
+
+### Added
+
+#### 🎉 ValueObject Support
+- **Complete ValueObject integration** with Adaptive Entity Manager v1.3.0
+- **Configuration option** `enable_value_objects` for enabling/disabling ValueObject support (defaults to true)
+- **Automatic ValueObjectConverterRegistry** registration in DI container
+- **Built-in ValueObject support** for Email, Money, and UserId types
+
+#### 🔧 Core Enhancements
+- **Enhanced Entity Manager creation** with optional ValueObject support
+- **Backward compatibility** - existing configurations work without changes
+- **Opt-in ValueObject support** - can be disabled per entity manager
+
+#### 📚 Configuration & Testing
+- **New configuration option**: `enable_value_objects` (boolean, defaults to true)
+- **Comprehensive test suite** with 14 tests covering ValueObject functionality
+- **DI container tests** verifying correct service registration
+- **Functional tests** ensuring ValueObject support works end-to-end
+
+### Enhanced
+
+#### 🚀 Dependency Injection
+- **ValueObjectConverterRegistry** automatically registered as public service
+- **Entity Manager services** enhanced with ValueObject support
+- **Conditional ValueObject injection** based on configuration
+
+#### 🔄 Backward Compatibility
+- **100% Backward Compatible** - existing configurations unchanged
+- **Optional ValueObject support** - enabled by default but can be disabled
+- **Graceful degradation** - works with or without ValueObject registry
+
+### Technical Details
+
+#### Configuration Example
+```yaml
+adaptive_entity_manager:
+    entity_managers:
+        default:
+            entities_dir: '%kernel.project_dir%/src/Entity'
+            entities_namespace: 'App\Entity\'
+            enable_value_objects: true  # Enable ValueObject support (default: true)
+```
+
+#### Service Registration
+- `adaptive_entity_manager.value_object_registry` - ValueObjectConverterRegistry service
+- Enhanced entity manager services with ValueObject support
+- Automatic built-in ValueObject converter registration
+
+#### Testing
+- **14 comprehensive tests** covering all ValueObject functionality
+- **DI container validation** ensuring correct service wiring
+- **Functional tests** verifying end-to-end ValueObject behavior
+- **Configuration tests** validating default and custom settings
+
+### Dependencies
+- **Updated**: `kabiroman/adaptive-entity-manager` to `^1.3` for ValueObject support
+- **Added dev dependency**: `symfony/yaml` for test configuration loading
+
+### Migration Guide
+
+For existing projects - **no changes required**! ValueObject support is enabled by default.
+
+To disable ValueObject support:
+```yaml
+adaptive_entity_manager:
+    entity_managers:
+        your_manager:
+            # ... existing config ...
+            enable_value_objects: false
+```
+
+To use ValueObjects in your entities:
+1. Update entity metadata to specify ValueObject fields
+2. Use ValueObject types in entity properties
+3. Enjoy automatic conversion during persistence/hydration
+
+---
+
 ## [2.3.0] - 2025-06-17
 
 ### 🚀 Added
