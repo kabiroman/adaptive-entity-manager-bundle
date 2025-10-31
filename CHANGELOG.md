@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0] - 2025-10-31
+
+### Updated
+- **Core Dependency**: Updated `kabiroman/adaptive-entity-manager` to `^1.4.0`
+- **Boolean Mapping Support**: Bundle documentation updated to reflect new `values` option in core for bidirectional boolean mapping and criteria handling
+
+### Notes
+- No breaking changes. If `values` is not configured in metadata/YAML, behavior remains unchanged.
+
 ## [2.4.1] - 2025-06-18
 
 ### Updated

@@ -267,6 +267,37 @@ services:
 ## Usage (Version 2.0.0 and above)
 With the introduction of multiple entity managers, you now interact with a `ManagerRegistry` to retrieve specific entity managers by name.
 
+### Mapping non-boolean sources to boolean fields
+If your source contains flags like `Y|N`, `0|1`, `T|F`, you can normalize them into PHP `bool` via YAML using `values` on a field with `type: boolean`.
+
+Example (`%kernel.project_dir%/config/aem/entities/default.user.yaml`):
+
+```yaml
+App\Entity\User:
+  dataAdapterClass: App\DataAdapter\UserDataAdapter
+  id:
+    id:
+      column: ID
+      type: integer
+      nullable: false
+  fields:
+    active:
+      column: ACTIVE
+      type: boolean
+      nullable: false
+      values:
+        Y: true
+        N: false
+        1: true
+        0: false
+```
+
+Notes:
+- Keys in `values` are compared case-insensitively for strings; exact match takes precedence.
+- If `values` is not specified, the source value is used as-is; no implicit Y/N handling occurs.
+- Repository criteria for boolean fields also use `values` for outbound mapping. For example, `findBy(['active' => true])` will map `true` to the configured source value (e.g., `Y`) before hitting the adapter. Arrays are mapped element-wise.
+- During persistence (object → row), boolean properties are converted to the configured source representation using `values`.
+
 ```php
 use Kabiroman\AdaptiveEntityManagerBundle\Service\ManagerRegistryInterface;
 use App\Entity\Adaptive\User; // Example entity, adjust namespace as per your config
