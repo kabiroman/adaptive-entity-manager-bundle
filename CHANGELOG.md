@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.1] - 2025-12-18
+
+### Fixed
+
+- **Event Dispatching**: Resolved an issue where event dispatching was incorrectly using the `NAME` constant instead of the `::class` constant in `UnitOfWorkEventSubscriber`. This ensures correct event listener triggering.
+
 ## [2.5.0] - 2025-10-31
 
 ### Updated
