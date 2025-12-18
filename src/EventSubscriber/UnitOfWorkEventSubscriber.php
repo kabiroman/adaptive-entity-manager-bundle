@@ -41,36 +41,36 @@ class UnitOfWorkEventSubscriber implements EventSubscriberInterface
     public function onPrePersist(PrePersistEvent $event): void
     {
         $symfonyEvent = new PrePersistEntityEvent($event->getEntity(), $event);
-        $this->eventDispatcher->dispatch($symfonyEvent, PrePersistEntityEvent::NAME);
+        $this->eventDispatcher->dispatch($symfonyEvent, PrePersistEntityEvent::class);
     }
 
     public function onPostPersist(PostPersistEvent $event): void
     {
         $symfonyEvent = new PostPersistEntityEvent($event->getEntity(), $event);
-        $this->eventDispatcher->dispatch($symfonyEvent, PostPersistEntityEvent::NAME);
+        $this->eventDispatcher->dispatch($symfonyEvent, PostPersistEntityEvent::class);
     }
 
     public function onPreUpdate(PreUpdateEvent $event): void
     {
         $symfonyEvent = new PreUpdateEntityEvent($event->getEntity(), $event);
-        $this->eventDispatcher->dispatch($symfonyEvent, PreUpdateEntityEvent::NAME);
+        $this->eventDispatcher->dispatch($symfonyEvent, PreUpdateEntityEvent::class);
     }
 
     public function onPostUpdate(PostUpdateEvent $event): void
     {
         $symfonyEvent = new PostUpdateEntityEvent($event->getEntity(), $event);
-        $this->eventDispatcher->dispatch($symfonyEvent, PostUpdateEntityEvent::NAME);
+        $this->eventDispatcher->dispatch($symfonyEvent, PostUpdateEntityEvent::class);
     }
 
     public function onPreRemove(PreRemoveEvent $event): void
     {
         $symfonyEvent = new PreRemoveEntityEvent($event->getEntity(), $event);
-        $this->eventDispatcher->dispatch($symfonyEvent, PreRemoveEntityEvent::NAME);
+        $this->eventDispatcher->dispatch($symfonyEvent, PreRemoveEntityEvent::class);
     }
 
     public function onPostRemove(PostRemoveEvent $event): void
     {
         $symfonyEvent = new PostRemoveEntityEvent($event->getEntity(), $event);
-        $this->eventDispatcher->dispatch($symfonyEvent, PostRemoveEntityEvent::NAME);
+        $this->eventDispatcher->dispatch($symfonyEvent, PostRemoveEntityEvent::class);
     }
 }
