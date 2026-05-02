@@ -2,5 +2,6 @@
 /composer.lock
 /.phpunit.result.cache
 /.phpunit.cache
+/tests/Kernel/FixtureApp/var/
 /.idea/
 .DS_Store
