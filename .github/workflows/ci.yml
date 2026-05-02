@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php: "8.1"
+            symfony-deps: "6.4"
+          - php: "8.2"
+            symfony-deps: "6.4"
+          - php: "8.3"
+            symfony-deps: "6.4"
+          - php: "8.4"
+            symfony-deps: "6.4"
+          - php: "8.2"
+            symfony-deps: "7"
+          - php: "8.3"
+            symfony-deps: "7"
+          - php: "8.4"
+            symfony-deps: "7"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+
+      - name: Validate composer.json
+        run: composer composer-validate
+
+      - name: Install dependencies (Symfony ${{ matrix.symfony-deps }}.x)
+        run: |
+          set -eux
+          if [ "${{ matrix.symfony-deps }}" = "7" ]; then
+            SF='^7.0'
+          else
+            SF='^6.4'
+          fi
+          composer update \
+            symfony/framework-bundle:"${SF}" \
+            symfony/event-dispatcher:"${SF}" \
+            symfony/http-kernel:"${SF}" \
+            symfony/dependency-injection:"${SF}" \
+            symfony/config:"${SF}" \
+            symfony/yaml:"${SF}" \
+            symfony/phpunit-bridge:"${SF}" \
+            symfony/monolog-bridge:"${SF}" \
+            symfony/http-foundation:"${SF}" \
+            symfony/routing:"${SF}" \
+            symfony/var-dumper:"${SF}" \
+            symfony/error-handler:"${SF}" \
+            symfony/finder:"${SF}" \
+            symfony/filesystem:"${SF}" \
+            symfony/string:"${SF}" \
+            symfony/cache:"${SF}" \
+            symfony/var-exporter:"${SF}" \
+            --with-all-dependencies --no-interaction --prefer-dist
+
+      - name: Run PHPUnit
+        run: vendor/bin/phpunit
