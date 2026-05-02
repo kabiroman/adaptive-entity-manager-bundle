@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2026-05-03
+
+### Changed
+
+- **BREAKING:** Raised minimum Symfony packages from `^6.0` to **`^6.4 || ^7.0`** (supported/tested on Symfony 6.4 LTS and Symfony 7.x). Projects still on Symfony 6.0–6.3 must upgrade Symfony or stay on bundle 2.x.
+- Bump `kabiroman/adaptive-entity-manager` requirement to **`^1.5`**.
+
+### Added
+
+- GitHub Actions workflow with an intentional PHP × Symfony matrix (PHP 8.1 + Symfony 6.4 only; PHP 8.2–8.4 with Symfony 6.4 and Symfony 7).
+- Kernel-based smoke test (`AEMKernel`) that boots `FrameworkBundle` + this bundle and resolves `AdaptiveEntityManager` from the container.
+- Composer scripts: `composer test`, `composer composer-validate`.
+
+### Removed
+
+- The `version` field from `composer.json` (releases are tagged; use Packagist / Git tags for versioning).
+
 ## [2.5.1] - 2025-12-18
 
 ### Fixed
