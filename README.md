@@ -3,6 +3,24 @@
 ## Introduction
 This bundle provides flexible entity management for Symfony applications, integrating with Doctrine ORM to handle entities dynamically from YAML configurations. In version 2.0.0, it introduces enhanced support for **multiple EntityManagers**, allowing for more complex and adaptable database interactions. Version 2.4.0 adds comprehensive **ValueObject support** for domain-driven design with immutable value objects. It enables automated loading of entity definitions and supports various EntityManagers for improved flexibility.
 
+## Compatibility
+
+- **PHP:** 8.1, 8.2, 8.3, 8.4 (see CI matrix in `.github/workflows/ci.yml`).
+- **Symfony:** 6.4 LTS and 7.x. This bundle requires `symfony/framework-bundle` **`^6.4 || ^7.0`**. Symfony 7 components need **PHP 8.2+** (Symfony 6.4 can run on PHP 8.1).
+- **Core:** `kabiroman/adaptive-entity-manager` **^1.5**.
+
+CI runs PHPUnit on an intentional matrix (PHP 8.1 with Symfony 6.4 only; PHP 8.2–8.4 with Symfony 6.4 and with Symfony 7).
+
+## Development
+
+Clone the repository, then:
+
+```bash
+composer install
+composer composer-validate
+composer test
+```
+
 ## Installation
 To install the bundle, use Composer:
 
