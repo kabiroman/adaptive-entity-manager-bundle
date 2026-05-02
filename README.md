@@ -1,5 +1,7 @@
 # Adaptive Entity Manager Bundle
 
+[![CI](https://github.com/kabiroman/adaptive-entity-manager-bundle/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/kabiroman/adaptive-entity-manager-bundle/actions/workflows/ci.yml)
+
 ## Introduction
 This bundle provides flexible entity management for Symfony applications, integrating with Doctrine ORM to handle entities dynamically from YAML configurations. In version 2.0.0, it introduces enhanced support for **multiple EntityManagers**, allowing for more complex and adaptable database interactions. Version 2.4.0 adds comprehensive **ValueObject support** for domain-driven design with immutable value objects. It enables automated loading of entity definitions and supports various EntityManagers for improved flexibility.
 
