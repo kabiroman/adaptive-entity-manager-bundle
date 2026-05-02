@@ -1,0 +1,11 @@
+parameters:
+    env(APP_SECRET): 'test-secret-test-test-test-test-test'
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    Kabiroman\AdaptiveEntityManagerBundle\Tests\Kernel\Stub\SmokeEntityDataAdapter:
+        tags:
+            - { name: adaptive_entity_manager.adapter }

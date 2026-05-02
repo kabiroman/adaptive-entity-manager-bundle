@@ -23,8 +23,9 @@ class ValueObjectIntegrationTest extends TestCase
         // Register required services and parameters
         $this->container->register('Psr\\EventDispatcher\\EventDispatcherInterface');
         $this->container->register('event_dispatcher', 'Symfony\\Component\\EventDispatcher\\EventDispatcher');
-        $this->container->setParameter('kernel.project_dir', __DIR__ . '/../..');
-        $this->container->setParameter('kernel.cache_dir', __DIR__ . '/../../var/cache');
+        $projectDir = __DIR__.'/fixtures/project';
+        $this->container->setParameter('kernel.project_dir', $projectDir);
+        $this->container->setParameter('kernel.cache_dir', $projectDir.'/var/cache');
     }
 
     public function testValueObjectRegistryIsAvailable(): void
@@ -33,8 +34,8 @@ class ValueObjectIntegrationTest extends TestCase
             'adaptive_entity_manager' => [
                 'entity_managers' => [
                     'test' => [
-                        'entities_dir' => __DIR__ . '/fixtures/entities',
-                        'entities_namespace' => 'App\\Entity\\Test\\',
+                        'entities_dir' => __DIR__ . '/fixtures/project/src/Entity/Test',
+                        'entities_namespace' => 'TestsFunctional\\Entity\\Test\\',
                         'enable_value_objects' => true,
                     ],
                 ],
@@ -57,8 +58,8 @@ class ValueObjectIntegrationTest extends TestCase
             'adaptive_entity_manager' => [
                 'entity_managers' => [
                     'test' => [
-                        'entities_dir' => __DIR__ . '/fixtures/entities',
-                        'entities_namespace' => 'App\\Entity\\Test\\',
+                        'entities_dir' => __DIR__ . '/fixtures/project/src/Entity/Test',
+                        'entities_namespace' => 'TestsFunctional\\Entity\\Test\\',
                         'enable_value_objects' => true,
                     ],
                 ],
@@ -90,8 +91,8 @@ class ValueObjectIntegrationTest extends TestCase
             'adaptive_entity_manager' => [
                 'entity_managers' => [
                     'test' => [
-                        'entities_dir' => __DIR__ . '/fixtures/entities',
-                        'entities_namespace' => 'App\\Entity\\Test\\',
+                        'entities_dir' => __DIR__ . '/fixtures/project/src/Entity/Test',
+                        'entities_namespace' => 'TestsFunctional\\Entity\\Test\\',
                         'enable_value_objects' => false,
                     ],
                 ],
@@ -115,8 +116,8 @@ class ValueObjectIntegrationTest extends TestCase
             'adaptive_entity_manager' => [
                 'entity_managers' => [
                     'test' => [
-                        'entities_dir' => __DIR__ . '/fixtures/entities',
-                        'entities_namespace' => 'App\\Entity\\Test\\',
+                        'entities_dir' => __DIR__ . '/fixtures/project/src/Entity/Test',
+                        'entities_namespace' => 'TestsFunctional\\Entity\\Test\\',
                         'enable_value_objects' => true,
                     ],
                 ],
@@ -150,8 +151,8 @@ class ValueObjectIntegrationTest extends TestCase
             'adaptive_entity_manager' => [
                 'entity_managers' => [
                     'test' => [
-                        'entities_dir' => __DIR__ . '/fixtures/entities',
-                        'entities_namespace' => 'App\\Entity\\Test\\',
+                        'entities_dir' => __DIR__ . '/fixtures/project/src/Entity/Test',
+                        'entities_namespace' => 'TestsFunctional\\Entity\\Test\\',
                         // enable_value_objects not specified - should default to true
                     ],
                 ],

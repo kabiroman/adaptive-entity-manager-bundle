@@ -1,0 +1,9 @@
+TestsFunctional\Entity\Test\VoTestEntity:
+    repositoryClass: Kabiroman\AEM\EntityRepository
+    dataAdapterClass: Kabiroman\AdaptiveEntityManagerBundle\Tests\Kernel\Stub\SmokeEntityDataAdapter
+    id:
+        id:
+            type: int
+    fields:
+        email:
+            type: string

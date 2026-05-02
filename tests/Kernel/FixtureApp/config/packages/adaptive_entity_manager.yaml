@@ -1,0 +1,7 @@
+adaptive_entity_manager:
+    entity_managers:
+        default:
+            entities_dir: '%kernel.project_dir%/src/Entity'
+            entities_namespace: 'App\Entity\'
+            use_optimized_metadata: false
+            enable_value_objects: false

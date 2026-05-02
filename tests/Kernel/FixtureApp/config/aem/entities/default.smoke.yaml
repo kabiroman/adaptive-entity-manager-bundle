@@ -1,0 +1,9 @@
+App\Entity\SmokeEntity:
+    repositoryClass: Kabiroman\AEM\EntityRepository
+    dataAdapterClass: Kabiroman\AdaptiveEntityManagerBundle\Tests\Kernel\Stub\SmokeEntityDataAdapter
+    id:
+        id:
+            type: int
+    fields:
+        label:
+            type: string
