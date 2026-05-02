@@ -39,6 +39,9 @@ jobs:
       - name: Validate composer.json
         run: composer composer-validate
 
+      # Fresh checkouts have no composer.lock; Composer 2.x refuses a partial
+      # `composer update pkg:constraint ...` until a lock file exists. Narrow
+      # Symfony constraints in composer.json, then run a full update.
       - name: Install dependencies (Symfony ${{ matrix.symfony-deps }}.x)
         run: |
           set -eux
@@ -47,25 +50,8 @@ jobs:
           else
             SF='^6.4'
           fi
-          composer update \
-            symfony/framework-bundle:"${SF}" \
-            symfony/event-dispatcher:"${SF}" \
-            symfony/http-kernel:"${SF}" \
-            symfony/dependency-injection:"${SF}" \
-            symfony/config:"${SF}" \
-            symfony/yaml:"${SF}" \
-            symfony/phpunit-bridge:"${SF}" \
-            symfony/monolog-bridge:"${SF}" \
-            symfony/http-foundation:"${SF}" \
-            symfony/routing:"${SF}" \
-            symfony/var-dumper:"${SF}" \
-            symfony/error-handler:"${SF}" \
-            symfony/finder:"${SF}" \
-            symfony/filesystem:"${SF}" \
-            symfony/string:"${SF}" \
-            symfony/cache:"${SF}" \
-            symfony/var-exporter:"${SF}" \
-            --with-all-dependencies --no-interaction --prefer-dist
+          perl -pi -e 's/"\^6\.4 \|\| \^7\.0"/"'"${SF}"'"/g' composer.json
+          composer update --no-interaction --prefer-dist --with-all-dependencies
 
       - name: Run PHPUnit
         run: vendor/bin/phpunit
