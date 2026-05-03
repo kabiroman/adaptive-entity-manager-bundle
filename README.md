@@ -15,6 +15,8 @@ CI runs PHPUnit on an intentional matrix (PHP 8.1 with Symfony 6.4 only; PHP 8.2
 
 ## Development
 
+Maintainer RFCs and upgrade plans live under [`docs/rfc/`](docs/rfc/) (e.g. [Symfony 8 support](docs/rfc/symfony-8-support.md)).
+
 Clone the repository, then:
 
 ```bash
