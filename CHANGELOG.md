@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] - 2026-05-03
+
+### Changed
+
+- Raised `kabiroman/adaptive-entity-manager` requirement to **`^1.6`** (value object mapping without `ValueObjectInterface`, `ValueObjectAwareEntityManagerInterface`, criteria alignment with flush, stricter metadata; see upstream [CHANGELOG](https://github.com/kabiroman/adaptive-entity-manager/blob/main/CHANGELOG.md)).
+
+### Notes
+
+- **API awareness:** `getValueObjectRegistry()` / `hasValueObjectSupport()` live on `ValueObjectAwareEntityManagerInterface`, not on the base `EntityManagerInterface`. Bundle-managed services remain `AdaptiveEntityManager`; if you inject managers only as `EntityManagerInterface`, narrow the type when you need those methods.
+
 ## [3.0.0] - 2026-05-03
 
 ### Changed

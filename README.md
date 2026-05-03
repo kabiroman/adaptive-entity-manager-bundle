@@ -9,7 +9,7 @@ This bundle provides flexible entity management for Symfony applications, integr
 
 - **PHP:** 8.1, 8.2, 8.3, 8.4 (see CI matrix in `.github/workflows/ci.yml`).
 - **Symfony:** 6.4 LTS and 7.x. This bundle requires `symfony/framework-bundle` **`^6.4 || ^7.0`**. Symfony 7 components need **PHP 8.2+** (Symfony 6.4 can run on PHP 8.1).
-- **Core:** `kabiroman/adaptive-entity-manager` **^1.5**.
+- **Core:** `kabiroman/adaptive-entity-manager` **^1.6**.
 
 CI runs PHPUnit on an intentional matrix (PHP 8.1 with Symfony 6.4 only; PHP 8.2–8.4 with Symfony 6.4 and with Symfony 7).
 
